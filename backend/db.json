@@ -1,0 +1,269 @@
+{
+  "users": [
+    {
+      "id": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "$2b$10$o7QoYFATXDswUpc.7gvUIOJXP9VEn2gwUoHeF5mcSRMXUXwEebWNu",
+      "createdAt": "2025-08-06T18:42:42.431Z"
+    },
+    {
+      "id": "8787a444-5165-440b-a635-a334f2b7144e",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "password": "$2b$10$o7QoYFATXDswUpc.7gvUIOJXP9VEn2gwUoHeF5mcSRMXUXwEebWNu",
+      "createdAt": "2025-08-06T18:42:42.432Z"
+    }
+  ],
+  "books": [
+    {
+      "id": "0c5ec240-4b1b-4ff7-aac9-da6772afc1bd",
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "genre": "Fiction",
+      "condition": "Good",
+      "description": "A classic American novel",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T18:42:42.432Z"
+    },
+    {
+      "id": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "A powerful story of racial injustice and childhood innocence",
+      "status": "available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "owner": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "createdAt": "2025-08-06T18:42:42.432Z"
+    },
+    {
+      "id": "a87e3397-6c00-4b77-a488-e9c4823e94e0",
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "genre": "Technology",
+      "condition": "Like New",
+      "description": "A handbook of agile software craftsmanship",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T18:42:42.432Z"
+    },
+    {
+      "id": "f93c54d0-0223-4e6e-a485-c4ce87e57ab0",
+      "title": "totally new title",
+      "author": "New author",
+      "genre": "Technology",
+      "condition": "Poor",
+      "description": "so far so bad",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T18:52:26.066Z"
+    },
+    {
+      "id": "3b8c546a-7c50-411d-9983-be08ddbb2ca4",
+      "title": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "A classic coming-of-age story about teenager Holden Caulfield.",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:39:01.445Z"
+    },
+    {
+      "id": "0faac732-7298-4ed8-8c95-b849d7bc00d4",
+      "title": "1984",
+      "author": "George Orwell",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:39:13.889Z"
+    },
+    {
+      "id": "90e198ec-69c2-4e66-b87c-c16915b7c9ac",
+      "title": "Test Book",
+      "author": "Test Author",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:39:35.715Z"
+    },
+    {
+      "id": "72b24c67-5b1c-4652-846f-b85697899173",
+      "title": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "A classic coming-of-age story about teenager Holden Caulfield.",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:41:22.128Z"
+    },
+    {
+      "id": "1708c355-12ba-4a64-b916-5b9c93f7a75a",
+      "title": "1984",
+      "author": "George Orwell",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:41:34.532Z"
+    },
+    {
+      "id": "473c29f5-6ef9-4e64-b503-1f058e02f58f",
+      "title": "Test Book",
+      "author": "Test Author",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:41:56.761Z"
+    },
+    {
+      "id": "d4ac1b30-0a65-45d6-9c98-f4b26c7beff3",
+      "title": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "A classic coming-of-age story about teenager Holden Caulfield.",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:42:59.899Z"
+    },
+    {
+      "id": "76e94e41-4bb6-4cb2-8181-1d69d1172532",
+      "title": "1984",
+      "author": "George Orwell",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:43:12.551Z"
+    },
+    {
+      "id": "489bde0c-28b9-42c1-8ed2-51f68fe10295",
+      "title": "Test Book",
+      "author": "Test Author",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T19:43:34.379Z"
+    },
+    {
+      "id": "fb0bbae5-7b83-4e99-9380-ba0bf2326e9c",
+      "title": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "A classic coming-of-age story about teenager Holden Caulfield.",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T20:02:48.053Z"
+    },
+    {
+      "id": "c9d88fd4-dd75-496e-895f-622324fbcbcb",
+      "title": "1984",
+      "author": "George Orwell",
+      "genre": "Fiction",
+      "condition": "Very Good",
+      "description": "",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "owner": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "createdAt": "2025-08-06T20:03:00.550Z"
+    }
+  ],
+  "exchanges": [
+    {
+      "id": "c2c8d577-db3b-4275-8797-ad6889cfc20e",
+      "requesterId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "requesterName": "John Doe",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "ownerName": "Jane Smith",
+      "requestedBook": {
+        "id": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "condition": "Very Good"
+      },
+      "offeredBook": {
+        "id": "a87e3397-6c00-4b77-a488-e9c4823e94e0",
+        "title": "Clean Code",
+        "author": "Robert C. Martin",
+        "condition": "Like New"
+      },
+      "message": "let's exchange",
+      "status": "pending",
+      "createdAt": "2025-08-06T19:11:04.498Z"
+    }
+  ]
+}
