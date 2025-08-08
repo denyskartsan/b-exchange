@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider } from 'antd';
-import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider, Popconfirm } from 'antd';
+import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useBooksStore, useAuthStore, useUIStore, useExchangeStore } from '../stores';
 
 const { Option } = Select;
 const { Search } = Input;
 
 const BookList = () => {
-  const { books, myBooks, fetchBooks, fetchMyBooks, isLoading, error, clearError } = useBooksStore();
+  const { books, myBooks, fetchBooks, fetchMyBooks, isLoading, error, clearError, deleteBook } = useBooksStore();
   const { getCurrentUser } = useAuthStore();
   const { openModal, closeModal, isModalOpen, getModalData } = useUIStore();
   const { createExchange } = useExchangeStore();
@@ -122,6 +122,15 @@ const BookList = () => {
     return currentUser && book.ownerId === currentUser.id;
   };
 
+  const handleDeleteBook = async (bookId) => {
+    try {
+      await deleteBook(bookId);
+      message.success('Book deleted');
+    } catch (error) {
+      message.error(error.response?.data?.message || 'Failed to delete book');
+    }
+  };
+
   const getConditionColor = (condition) => {
     const colors = {
       'Like New': 'green',
@@ -211,9 +220,18 @@ const BookList = () => {
                 }
                 actions={[
                   isOwnBook(book) ? (
-                    <Button disabled icon={<BookOutlined />}>
-                      Your Book
-                    </Button>
+                    <Popconfirm
+                      title="Delete this book?"
+                      description="This action cannot be undone."
+                      okText="Delete"
+                      okButtonProps={{ danger: true }}
+                      cancelText="Cancel"
+                      onConfirm={() => handleDeleteBook(book.id)}
+                    >
+                      <Button danger icon={<DeleteOutlined />} data-testid={`delete-book-${book.id}`}>
+                        Delete
+                      </Button>
+                    </Popconfirm>
                   ) : (
                     <Button
                       data-testid={`exchange-button-${book.id}`}

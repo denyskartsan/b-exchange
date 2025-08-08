@@ -265,6 +265,40 @@ app.post('/api/books', authenticateToken, async (req, res) => {
   }
 });
 
+// Delete a book (owner only)
+app.delete('/api/books/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const bookIndex = db.data.books.findIndex(b => b.id === id);
+
+    if (bookIndex === -1) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    const book = db.data.books[bookIndex];
+    if (book.ownerId !== req.user.id) {
+      return res.status(403).json({ message: 'You can only delete your own books' });
+    }
+
+    // Remove the book
+    db.data.books.splice(bookIndex, 1);
+
+    // Optional: also remove related exchanges where this book participated
+    if (Array.isArray(db.data.exchanges)) {
+      db.data.exchanges = db.data.exchanges.filter(ex =>
+        ex.requestedBook.id !== id && ex.offeredBook.id !== id
+      );
+    }
+
+    await db.write();
+
+    res.json({ message: 'Book deleted successfully' });
+  } catch (error) {
+    console.error('Delete book error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 app.get('/api/books/search', (req, res) => {
   try {
     const query = req.query.q?.toLowerCase();
