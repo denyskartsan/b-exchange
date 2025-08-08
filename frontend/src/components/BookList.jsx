@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider, Popconfirm } from 'antd';
-import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider, Popconfirm, Form } from 'antd';
+import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useBooksStore, useAuthStore, useUIStore, useExchangeStore } from '../stores';
+import BookForm from './BookForm';
 
 const { Option } = Select;
 const { Search } = Input;
 
 const BookList = () => {
-  const { books, myBooks, fetchBooks, fetchMyBooks, isLoading, error, clearError, deleteBook } = useBooksStore();
+  const { books, myBooks, fetchBooks, fetchMyBooks, isLoading, error, clearError, deleteBook, updateBook } = useBooksStore();
   const { getCurrentUser } = useAuthStore();
   const { openModal, closeModal, isModalOpen, getModalData } = useUIStore();
   const { createExchange } = useExchangeStore();
@@ -22,6 +23,10 @@ const BookList = () => {
   const [selectedOfferedBook, setSelectedOfferedBook] = useState(null);
   const [exchangeMessage, setExchangeMessage] = useState('');
   const [exchangeLoading, setExchangeLoading] = useState(false);
+  // Edit related local state
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingBook, setEditingBook] = useState(null);
+  const [editForm] = Form.useForm();
   
   const currentUser = getCurrentUser();
   const exchangeModalVisible = isModalOpen('exchange');
@@ -231,18 +236,37 @@ const BookList = () => {
                 }
                 actions={[
                   isOwnBook(book) ? (
-                    <Popconfirm
-                      title="Delete this book?"
-                      description="This action cannot be undone."
-                      okText="Delete"
-                      okButtonProps={{ danger: true }}
-                      cancelText="Cancel"
-                      onConfirm={() => handleDeleteBook(book.id)}
-                    >
-                      <Button danger icon={<DeleteOutlined />} data-testid={`delete-book-${book.id}`}>
-                        Delete
+                    <div className="flex gap-2">
+                      <Button
+                        icon={<EditOutlined />}
+                        onClick={() => {
+                          setEditingBook(book);
+                          setEditModalVisible(true);
+                          editForm.setFieldsValue({
+                            title: book.title,
+                            author: book.author,
+                            genre: book.genre,
+                            condition: book.condition,
+                            description: book.description,
+                            coverImageUrl: book.coverImageUrl,
+                          });
+                        }}
+                      >
+                        Edit
                       </Button>
-                    </Popconfirm>
+                      <Popconfirm
+                        title="Delete this book?"
+                        description="This action cannot be undone."
+                        okText="Delete"
+                        okButtonProps={{ danger: true }}
+                        cancelText="Cancel"
+                        onConfirm={() => handleDeleteBook(book.id)}
+                      >
+                        <Button danger icon={<DeleteOutlined />} data-testid={`delete-book-${book.id}`}>
+                          Delete
+                        </Button>
+                      </Popconfirm>
+                    </div>
                   ) : (
                     <Button
                       data-testid={`exchange-button-${book.id}`}
@@ -287,6 +311,49 @@ const BookList = () => {
             </Col>
           ))}
         </Row>
+      )}
+
+      {/* Edit Book Modal */}
+      {editingBook && editModalVisible && (
+        <Modal
+          title={`Edit: ${editingBook.title}`}
+          open={editModalVisible}
+          onCancel={() => { setEditModalVisible(false); setEditingBook(null); }}
+          onOk={async () => {
+            try {
+              const values = await editForm.validateFields();
+              await updateBook(editingBook.id, values);
+              message.success('Book updated');
+              setEditModalVisible(false);
+              setEditingBook(null);
+            } catch (_) {}
+          }}
+          okText="Save"
+          cancelText="Cancel"
+        >
+          <BookForm
+            form={editForm}
+            onFinish={async (values) => {
+              try {
+                await updateBook(editingBook.id, values);
+                message.success('Book updated');
+                setEditModalVisible(false);
+                setEditingBook(null);
+              } catch (error) {
+                // Error handled by store
+              }
+            }}
+            initialValues={{
+              title: editingBook.title,
+              author: editingBook.author,
+              genre: editingBook.genre,
+              condition: editingBook.condition,
+              description: editingBook.description,
+              coverImageUrl: editingBook.coverImageUrl,
+            }}
+            showStatus={false}
+          />
+        </Modal>
       )}
 
       {/* Exchange Modal */}

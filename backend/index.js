@@ -266,6 +266,39 @@ app.post('/api/books', authenticateToken, async (req, res) => {
   }
 });
 
+// Update a book (owner only)
+app.put('/api/books/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, author, genre, condition, description, coverImageUrl, status } = req.body;
+
+    const book = db.data.books.find(b => b.id === id);
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+    if (book.ownerId !== req.user.id) {
+      return res.status(403).json({ message: 'You can only edit your own books' });
+    }
+
+    // Update allowed fields only
+    if (typeof title === 'string') book.title = title;
+    if (typeof author === 'string') book.author = author;
+    if (typeof genre === 'string') book.genre = genre;
+    if (typeof condition === 'string') book.condition = condition;
+    if (typeof description === 'string') book.description = description;
+    if (typeof coverImageUrl === 'string') book.coverImageUrl = coverImageUrl;
+    if (typeof status === 'string') book.status = status; // e.g., available
+
+    book.updatedAt = new Date().toISOString();
+    await db.write();
+
+    res.json(book);
+  } catch (error) {
+    console.error('Update book error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Delete a book (owner only)
 app.delete('/api/books/:id', authenticateToken, async (req, res) => {
   try {

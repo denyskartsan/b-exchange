@@ -33,18 +33,19 @@
     },
     {
       "id": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
-      "title": "To Kill a Mockingbird",
-      "author": "Harper Lee",
+      "title": "To Kill a Mockingbird 2",
+      "author": "Harper Lee 2",
       "genre": "Fiction",
       "condition": "Very Good",
-      "description": "A powerful story of racial injustice and childhood innocence",
+      "description": "A powerful story of racial injustice and childhood innocence.\nupdated description 2",
       "status": "available",
       "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "owner": {
         "name": "Jane Smith",
         "email": "jane@example.com"
       },
-      "createdAt": "2025-08-06T18:42:42.432Z"
+      "createdAt": "2025-08-06T18:42:42.432Z",
+      "updatedAt": "2025-08-08T13:55:47.558Z"
     },
     {
       "id": "a87e3397-6c00-4b77-a488-e9c4823e94e0",
