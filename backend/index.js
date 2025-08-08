@@ -320,7 +320,7 @@ app.delete('/api/books/:id', authenticateToken, async (req, res) => {
     // Optional: also remove related exchanges where this book participated
     if (Array.isArray(db.data.exchanges)) {
       db.data.exchanges = db.data.exchanges.filter(ex =>
-        ex.requestedBook.id !== id && ex.offeredBook.id !== id
+        ex.requestedBookId !== id && ex.offeredBookId !== id
       );
     }
 
@@ -385,25 +385,15 @@ app.post('/api/exchanges', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: 'Both books must be available for exchange' });
     }
 
-    // Create exchange request
+    // Create exchange request (store only IDs, not full book data)
     const exchangeRequest = {
       id: uuidv4(),
       requesterId: req.user.id,
       requesterName: req.user.name,
       ownerId: requestedBook.ownerId,
       ownerName: requestedBook.owner.name,
-      requestedBook: {
-        id: requestedBook.id,
-        title: requestedBook.title,
-        author: requestedBook.author,
-        condition: requestedBook.condition
-      },
-      offeredBook: {
-        id: offeredBook.id,
-        title: offeredBook.title,
-        author: offeredBook.author,
-        condition: offeredBook.condition
-      },
+      requestedBookId: requestedBook.id,
+      offeredBookId: offeredBook.id,
       message: exchangeMessage || '',
       status: 'pending',
       createdAt: new Date().toISOString()
@@ -424,7 +414,31 @@ app.post('/api/exchanges', authenticateToken, async (req, res) => {
 
 app.get('/api/exchanges/received', authenticateToken, (req, res) => {
   try {
-    const receivedExchanges = db.data.exchanges.filter(exchange => exchange.ownerId === req.user.id);
+    const receivedExchanges = db.data.exchanges
+      .filter(exchange => exchange.ownerId === req.user.id)
+      .map(exchange => {
+        // Populate current book data dynamically
+        const requestedBook = db.data.books.find(b => b.id === exchange.requestedBookId);
+        const offeredBook = db.data.books.find(b => b.id === exchange.offeredBookId);
+        
+        return {
+          ...exchange,
+          requestedBook: requestedBook ? {
+            id: requestedBook.id,
+            title: requestedBook.title,
+            author: requestedBook.author,
+            condition: requestedBook.condition
+          } : null,
+          offeredBook: offeredBook ? {
+            id: offeredBook.id,
+            title: offeredBook.title,
+            author: offeredBook.author,
+            condition: offeredBook.condition
+          } : null
+        };
+      })
+      .filter(exchange => exchange.requestedBook && exchange.offeredBook); // Filter out exchanges with deleted books
+    
     res.json(receivedExchanges);
   } catch (error) {
     console.error('Fetch received exchanges error:', error);
@@ -434,7 +448,31 @@ app.get('/api/exchanges/received', authenticateToken, (req, res) => {
 
 app.get('/api/exchanges/sent', authenticateToken, (req, res) => {
   try {
-    const sentExchanges = db.data.exchanges.filter(exchange => exchange.requesterId === req.user.id);
+    const sentExchanges = db.data.exchanges
+      .filter(exchange => exchange.requesterId === req.user.id)
+      .map(exchange => {
+        // Populate current book data dynamically
+        const requestedBook = db.data.books.find(b => b.id === exchange.requestedBookId);
+        const offeredBook = db.data.books.find(b => b.id === exchange.offeredBookId);
+        
+        return {
+          ...exchange,
+          requestedBook: requestedBook ? {
+            id: requestedBook.id,
+            title: requestedBook.title,
+            author: requestedBook.author,
+            condition: requestedBook.condition
+          } : null,
+          offeredBook: offeredBook ? {
+            id: offeredBook.id,
+            title: offeredBook.title,
+            author: offeredBook.author,
+            condition: offeredBook.condition
+          } : null
+        };
+      })
+      .filter(exchange => exchange.requestedBook && exchange.offeredBook); // Filter out exchanges with deleted books
+    
     res.json(sentExchanges);
   } catch (error) {
     console.error('Fetch sent exchanges error:', error);
@@ -469,8 +507,8 @@ app.put('/api/exchanges/:id/respond', authenticateToken, async (req, res) => {
 
     if (action === 'accept') {
       // Update book ownership
-      const requestedBook = db.data.books.find(b => b.id === exchange.requestedBook.id);
-      const offeredBook = db.data.books.find(b => b.id === exchange.offeredBook.id);
+      const requestedBook = db.data.books.find(b => b.id === exchange.requestedBookId);
+      const offeredBook = db.data.books.find(b => b.id === exchange.offeredBookId);
 
       if (requestedBook && offeredBook) {
         // Swap ownership

@@ -18,7 +18,7 @@
   "books": [
     {
       "id": "0c5ec240-4b1b-4ff7-aac9-da6772afc1bd",
-      "title": "The Great Gatsby",
+      "title": "The Great Gatsby 2",
       "author": "F. Scott Fitzgerald",
       "genre": "Fiction",
       "condition": "Good",
@@ -29,7 +29,8 @@
         "name": "John Doe",
         "email": "john@example.com"
       },
-      "createdAt": "2025-08-06T18:42:42.432Z"
+      "createdAt": "2025-08-06T18:42:42.432Z",
+      "updatedAt": "2025-08-08T14:05:28.308Z"
     },
     {
       "id": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
@@ -281,6 +282,18 @@
       "message": "let's exchange",
       "status": "pending",
       "createdAt": "2025-08-06T19:11:04.498Z"
+    },
+    {
+      "id": "95a6723e-e6e0-42c2-8af1-6f4aa6b7a6ad",
+      "requesterId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "requesterName": "Jane Smith",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "ownerName": "John Doe",
+      "requestedBookId": "0c5ec240-4b1b-4ff7-aac9-da6772afc1bd",
+      "offeredBookId": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
+      "message": "",
+      "status": "pending",
+      "createdAt": "2025-08-08T14:04:58.449Z"
     }
   ]
 }
