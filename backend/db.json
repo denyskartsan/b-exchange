@@ -300,6 +300,21 @@
         "email": "jane@example.com"
       },
       "createdAt": "2025-08-08T13:08:19.471Z"
+    },
+    {
+      "id": "41914e79-02b0-408c-ab7c-47ca768446a7",
+      "title": "test ",
+      "author": "test",
+      "genre": "Fiction",
+      "condition": "Like New",
+      "description": "test",
+      "status": "available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "owner": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "createdAt": "2025-08-08T13:11:36.473Z"
     }
   ],
   "exchanges": [
