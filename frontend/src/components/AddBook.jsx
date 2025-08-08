@@ -134,6 +134,17 @@ const AddBook = () => {
                 />
               </Form.Item>
 
+              <Form.Item
+                name="coverImageUrl"
+                label="Cover Image URL (Optional)"
+                rules={[{ type: 'url', warningOnly: true, message: 'Please enter a valid URL' }]}
+              >
+                <Input
+                  data-testid="book-cover-url-input"
+                  placeholder="https://example.com/cover.jpg"
+                />
+              </Form.Item>
+
               <Form.Item>
                 <Button
                   data-testid="add-book-button"

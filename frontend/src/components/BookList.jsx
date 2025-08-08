@@ -214,9 +214,20 @@ const BookList = () => {
                 data-testid={`book-card-${book.id}`}
                 className="h-full hover:shadow-lg transition-shadow"
                 cover={
-                  <div className="h-48 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-                    <BookOutlined className="text-4xl text-blue-400" />
-                  </div>
+                  book.coverImageUrl ? (
+                    <img
+                      src={book.coverImageUrl}
+                      alt={`${book.title} cover`}
+                      className="h-48 w-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="h-48 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                      <BookOutlined className="text-4xl text-blue-400" />
+                    </div>
+                  )
                 }
                 actions={[
                   isOwnBook(book) ? (

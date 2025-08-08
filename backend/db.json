@@ -240,6 +240,22 @@
         "email": "john@example.com"
       },
       "createdAt": "2025-08-06T20:03:00.550Z"
+    },
+    {
+      "id": "e8bd05ac-3089-46f4-ba9c-6f6a1fd9ebb9",
+      "title": "test 2",
+      "author": "test 2",
+      "genre": "Non-Fiction",
+      "condition": "Very Good",
+      "description": "",
+      "status": "available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "owner": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "coverImageUrl": "https://marketplace.canva.com/EAGKkPbakT4/1/0/251w/canva-purple-sky-book-cover-_DoLgxCzP90.jpg",
+      "createdAt": "2025-08-08T13:30:51.048Z"
     }
   ],
   "exchanges": [

@@ -225,7 +225,7 @@ app.get('/api/books/my', authenticateToken, (req, res) => {
 
 app.post('/api/books', authenticateToken, async (req, res) => {
   try {
-    const { title, author, genre, condition, description } = req.body;
+    const { title, author, genre, condition, description, coverImageUrl } = req.body;
 
     // Validate input
     if (!title || !author || !genre || !condition) {
@@ -249,6 +249,7 @@ app.post('/api/books', authenticateToken, async (req, res) => {
       status: 'available',
       ownerId: req.user.id,
       owner: { name: user.name, email: user.email },
+      coverImageUrl: typeof coverImageUrl === 'string' && coverImageUrl.length ? coverImageUrl : undefined,
       createdAt: new Date().toISOString()
     };
 
