@@ -2,10 +2,13 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Layout, Menu, Avatar, Dropdown, Flex } from 'antd';
 import { BookOutlined, PlusOutlined, UserOutlined, LogoutOutlined, SwapOutlined } from '@ant-design/icons';
+import { useAuthStore } from '../stores';
 
 const { Header: AntHeader } = Layout;
 
 const Header = ({ user, onLogout }) => {
+  const { getCurrentUser } = useAuthStore();
+  const currentUser = user || getCurrentUser();
   const location = useLocation();
 
   const menuItems = [
@@ -35,7 +38,7 @@ const Header = ({ user, onLogout }) => {
     {
       key: 'profile',
       icon: <UserOutlined />,
-      label: user?.name || 'Profile',
+      label: currentUser?.name || 'Profile',
       disabled: true,
     },
     {
@@ -71,7 +74,7 @@ const Header = ({ user, onLogout }) => {
         >
           <Flex align="center" className="cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg">
             <Avatar icon={<UserOutlined />} size="small" className="mr-2" />
-            <span className="text-gray-700">{user?.name}</span>
+            <span className="text-gray-700">{currentUser?.name}</span>
           </Flex>
         </Dropdown>
       </Flex>

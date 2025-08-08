@@ -38,6 +38,8 @@ export const booksAPI = {
   getAll: () => api.get('/books'),
   getMyBooks: () => api.get('/books/my'),
   add: (bookData) => api.post('/books', bookData),
+  update: (bookId, bookData) => api.put(`/books/${bookId}`, bookData),
+  delete: (bookId) => api.delete(`/books/${bookId}`),
   search: (query) => api.get(`/books/search?q=${query}`),
 };
 

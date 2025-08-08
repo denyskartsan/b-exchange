@@ -1,53 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider } from 'antd';
 import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined } from '@ant-design/icons';
-import { booksAPI, exchangeAPI } from '../utils/api';
-import { getToken, decodeToken } from '../utils/auth';
+import { useBooksStore, useAuthStore, useUIStore, useExchangeStore } from '../stores';
 
 const { Option } = Select;
 const { Search } = Input;
 
 const BookList = () => {
-  const [books, setBooks] = useState([]);
+  const { books, myBooks, fetchBooks, fetchMyBooks, isLoading, error, clearError } = useBooksStore();
+  const { getCurrentUser } = useAuthStore();
+  const { openModal, closeModal, isModalOpen, getModalData } = useUIStore();
+  const { createExchange } = useExchangeStore();
+  
+  // Local state for filtering
   const [filteredBooks, setFilteredBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [genreFilter, setGenreFilter] = useState('');
   const [conditionFilter, setConditionFilter] = useState('');
-  const [currentUser, setCurrentUser] = useState(null);
-  const [exchangeModalVisible, setExchangeModalVisible] = useState(false);
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [myBooks, setMyBooks] = useState([]);
+  
+  // Exchange related local state
   const [selectedOfferedBook, setSelectedOfferedBook] = useState(null);
   const [exchangeMessage, setExchangeMessage] = useState('');
   const [exchangeLoading, setExchangeLoading] = useState(false);
+  
+  const currentUser = getCurrentUser();
+  const exchangeModalVisible = isModalOpen('exchange');
+  const selectedBook = getModalData('exchange');
 
   useEffect(() => {
-    // Get current user from token
-    const token = getToken();
-    if (token) {
-      try {
-        const userData = decodeToken(token);
-        setCurrentUser(userData);
-      } catch (error) {
-        console.error('Error decoding token:', error);
-      }
-    }
-    fetchBooks();
+    handleFetchBooks();
   }, []);
 
   useEffect(() => {
     filterBooks();
   }, [books, searchTerm, genreFilter, conditionFilter]);
 
-  const fetchBooks = async () => {
+  // Handle error messages
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+      clearError();
+    }
+  }, [error, clearError]);
+
+  const handleFetchBooks = async () => {
     try {
-      const response = await booksAPI.getAll();
-      setBooks(response.data);
+      await fetchBooks();
     } catch (error) {
-      message.error('Failed to fetch books');
-    } finally {
-      setLoading(false);
+      // Error is handled by the store
     }
   };
 
@@ -73,16 +73,15 @@ const BookList = () => {
   };
 
   const handleExchange = async (book) => {
-    setSelectedBook(book);
     setSelectedOfferedBook(null);
     setExchangeMessage('');
     
-    // Fetch user's available books
+    // Fetch user's available books if not already loaded
     try {
-      const response = await booksAPI.getMyBooks();
-      const availableBooks = response.data.filter(b => b.status === 'available');
-      setMyBooks(availableBooks);
-      setExchangeModalVisible(true);
+      if (!myBooks?.length) {
+        await fetchMyBooks();
+      }
+      openModal('exchange', book);
     } catch (error) {
       message.error('Failed to load your books');
     }
@@ -96,15 +95,14 @@ const BookList = () => {
 
     setExchangeLoading(true);
     try {
-      await exchangeAPI.create({
+      await createExchange({
         requestedBookId: selectedBook.id,
         offeredBookId: selectedOfferedBook.id,
         message: exchangeMessage
       });
       
       message.success(`Exchange request sent to ${selectedBook.owner?.name}!`);
-      setExchangeModalVisible(false);
-      setSelectedBook(null);
+      closeModal('exchange');
       setSelectedOfferedBook(null);
       setExchangeMessage('');
     } catch (error) {
@@ -115,8 +113,7 @@ const BookList = () => {
   };
 
   const handleModalCancel = () => {
-    setExchangeModalVisible(false);
-    setSelectedBook(null);
+    closeModal('exchange');
     setSelectedOfferedBook(null);
     setExchangeMessage('');
   };
@@ -191,7 +188,7 @@ const BookList = () => {
       </Card>
 
       {/* Book Grid */}
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
         </div>

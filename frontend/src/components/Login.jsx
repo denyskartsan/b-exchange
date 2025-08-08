@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Input, Button, Card, message, Flex } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { authAPI } from '../utils/api';
 import { setToken, decodeToken } from '../utils/auth';
+import { useAuthStore } from '../stores';
 
 const Login = ({ onLogin }) => {
-  const [loading, setLoading] = useState(false);
+  const { isLoading, error, clearError } = useAuthStore();
+
+  // Handle error messages
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+      clearError();
+    }
+  }, [error, clearError]);
 
   const handleSubmit = async (values) => {
-    setLoading(true);
     try {
       const response = await authAPI.login(values);
       const { token } = response.data;
@@ -18,8 +26,6 @@ const Login = ({ onLogin }) => {
       onLogin(userData);
     } catch (error) {
       message.error(error.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -64,7 +70,7 @@ const Login = ({ onLogin }) => {
               data-testid="login-button"
               type="primary"
               htmlType="submit"
-              loading={loading}
+              loading={isLoading}
               className="w-full rounded-lg h-12 text-lg font-medium"
             >
               Sign In

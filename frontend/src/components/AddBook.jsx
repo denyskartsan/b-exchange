@@ -1,28 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Form, Input, Select, Button, message, Row, Col } from 'antd';
 import { BookOutlined } from '@ant-design/icons';
-import { booksAPI } from '../utils/api';
+import { useBooksStore } from '../stores';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 const AddBook = () => {
-  const [loading, setLoading] = useState(false);
+  const { addBook, isLoading, error, clearError } = useBooksStore();
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
+  // Handle error messages
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+      clearError();
+    }
+  }, [error, clearError]);
+
   const handleSubmit = async (values) => {
-    setLoading(true);
     try {
-      await booksAPI.add(values);
+      await addBook(values);
       message.success('Book added successfully!');
       form.resetFields();
       navigate('/');
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to add book');
-    } finally {
-      setLoading(false);
+      // Error is handled by the store and useEffect above
     }
   };
 
@@ -134,7 +139,7 @@ const AddBook = () => {
                   data-testid="add-book-button"
                   type="primary"
                   htmlType="submit"
-                  loading={loading}
+                  loading={isLoading}
                   size="large"
                   className="w-full"
                 >

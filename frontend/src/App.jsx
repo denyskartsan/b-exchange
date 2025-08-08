@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout, message } from 'antd';
 import Login from './components/Login';
@@ -8,43 +8,28 @@ import BookList from './components/BookList';
 import AddBook from './components/AddBook';
 import Exchanges from './components/Exchanges';
 import Header from './components/Header';
-import { getToken, setToken, removeToken, decodeToken } from './utils/auth';
+import { useAuthStore } from './stores';
 
 const { Content } = Layout;
 
 const App = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, isLoading, isInitialized, initializeAuth, login, logout } = useAuthStore();
 
   useEffect(() => {
-    const token = getToken();
-    if (token) {
-      try {
-        const decoded = decodeToken(token);
-        if (decoded.exp * 1000 > Date.now()) {
-          setUser(decoded);
-        } else {
-          removeToken();
-        }
-      } catch (error) {
-        removeToken();
-      }
-    }
-    setLoading(false);
+    initializeAuth();
   }, []);
 
   const handleLogin = (userData) => {
-    setUser(userData);
+    login(userData);
     message.success('Login successful!');
   };
 
   const handleLogout = () => {
-    removeToken();
-    setUser(null);
+    logout();
     message.success('Logged out successfully!');
   };
 
-  if (loading) {
+  if (isLoading || !isInitialized) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>

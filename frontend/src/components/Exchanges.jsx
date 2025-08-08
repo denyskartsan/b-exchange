@@ -1,32 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Card, Tabs, List, Button, message, Tag, Avatar, Empty, Modal } from 'antd';
 import { BookOutlined, SwapOutlined, UserOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { exchangeAPI } from '../utils/api';
+import { useExchangeStore } from '../stores';
 
 const { TabPane } = Tabs;
 
 const Exchanges = () => {
-  const [receivedExchanges, setReceivedExchanges] = useState([]);
-  const [sentExchanges, setSentExchanges] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [responseLoading, setResponseLoading] = useState(false);
+  const { 
+    receivedExchanges, 
+    sentExchanges, 
+    isLoading, 
+    responseLoading, 
+    error, 
+    fetchAllExchanges, 
+    respondToExchange,
+    getPendingReceivedCount,
+    getPendingSentCount,
+    clearError 
+  } = useExchangeStore();
 
   useEffect(() => {
-    fetchExchanges();
+    handleFetchExchanges();
   }, []);
 
-  const fetchExchanges = async () => {
+  // Handle error messages
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+      clearError();
+    }
+  }, [error, clearError]);
+
+  const handleFetchExchanges = async () => {
     try {
-      const [receivedResponse, sentResponse] = await Promise.all([
-        exchangeAPI.getReceived(),
-        exchangeAPI.getSent()
-      ]);
-      setReceivedExchanges(receivedResponse.data);
-      setSentExchanges(sentResponse.data);
+      await fetchAllExchanges();
     } catch (error) {
-      message.error('Failed to fetch exchanges');
-    } finally {
-      setLoading(false);
+      // Error is handled by the store and useEffect above
     }
   };
 
@@ -35,15 +44,11 @@ const Exchanges = () => {
       title: `${action === 'accept' ? 'Accept' : 'Decline'} Exchange Request`,
       content: `Are you sure you want to ${action} this exchange request? ${action === 'accept' ? 'The books will be swapped immediately.' : 'This action cannot be undone.'}`,
       onOk: async () => {
-        setResponseLoading(true);
         try {
-          await exchangeAPI.respond(exchangeId, action);
+          await respondToExchange(exchangeId, action);
           message.success(`Exchange ${action}ed successfully!`);
-          fetchExchanges(); // Refresh the list
         } catch (error) {
-          message.error(error.response?.data?.message || `Failed to ${action} exchange`);
-        } finally {
-          setResponseLoading(false);
+          // Error is handled by the store
         }
       }
     });
@@ -172,7 +177,7 @@ const Exchanges = () => {
       <Card>
         <Tabs defaultActiveKey="received" size="large">
           <TabPane 
-            tab={`Received (${receivedExchanges.filter(ex => ex.status === 'pending').length})`} 
+            tab={`Received (${getPendingReceivedCount()})`} 
             key="received"
           >
             {receivedExchanges.length === 0 ? (
@@ -182,7 +187,7 @@ const Exchanges = () => {
               />
             ) : (
               <List
-                loading={loading}
+                loading={isLoading}
                 dataSource={receivedExchanges}
                 renderItem={(exchange) => renderExchangeItem(exchange, true)}
                 pagination={{ pageSize: 5, showSizeChanger: false }}
@@ -191,7 +196,7 @@ const Exchanges = () => {
           </TabPane>
 
           <TabPane 
-            tab={`Sent (${sentExchanges.filter(ex => ex.status === 'pending').length})`} 
+            tab={`Sent (${getPendingSentCount()})`} 
             key="sent"
           >
             {sentExchanges.length === 0 ? (
@@ -201,7 +206,7 @@ const Exchanges = () => {
               />
             ) : (
               <List
-                loading={loading}
+                loading={isLoading}
                 dataSource={sentExchanges}
                 renderItem={(exchange) => renderExchangeItem(exchange, false)}
                 pagination={{ pageSize: 5, showSizeChanger: false }}

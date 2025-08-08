@@ -1,23 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Card, message, Flex } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { authAPI } from '../utils/api';
+import { useAuthStore } from '../stores';
 
 const Register = () => {
-  const [loading, setLoading] = useState(false);
+  const { isLoading, error, clearError } = useAuthStore();
   const navigate = useNavigate();
 
+  // Handle error messages
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+      clearError();
+    }
+  }, [error, clearError]);
+
   const handleSubmit = async (values) => {
-    setLoading(true);
     try {
       await authAPI.register(values);
       message.success('Registration successful! Please login.');
       navigate('/login');
     } catch (error) {
       message.error(error.response?.data?.message || 'Registration failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -100,7 +106,7 @@ const Register = () => {
               data-testid="register-button"
               type="primary"
               htmlType="submit"
-              loading={loading}
+              loading={isLoading}
               className="w-full rounded-lg h-12 text-lg font-medium"
             >
               Sign Up

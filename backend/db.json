@@ -240,6 +240,66 @@
         "email": "john@example.com"
       },
       "createdAt": "2025-08-06T20:03:00.550Z"
+    },
+    {
+      "id": "668e7f4f-61a1-4819-8486-1e560a464e2e",
+      "title": "Jane second book",
+      "author": "Not Jane",
+      "genre": "Romance",
+      "condition": "Like New",
+      "description": "Like new Romance Not Jane author Jane's second book",
+      "status": "available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "owner": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "createdAt": "2025-08-07T07:53:58.610Z"
+    },
+    {
+      "id": "e8773765-3f8a-4faa-b9b5-cd2a00490a3f",
+      "title": "third",
+      "author": "not Jane again",
+      "genre": "Fiction",
+      "condition": "Like New",
+      "description": "Optional description",
+      "status": "available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "owner": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "createdAt": "2025-08-07T07:54:47.932Z"
+    },
+    {
+      "id": "d0a67f8e-4aaa-43ac-a1de-4217e24ba14b",
+      "title": "new jane book ",
+      "author": "author of jane book",
+      "genre": "Romance",
+      "condition": "Like New",
+      "description": "Optional ",
+      "status": "available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "owner": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "createdAt": "2025-08-08T13:01:36.629Z"
+    },
+    {
+      "id": "aa6afa0f-c818-41d4-9838-345881f05e60",
+      "title": "test new book",
+      "author": "test",
+      "genre": "Fiction",
+      "condition": "Like New",
+      "description": "test ",
+      "status": "available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "owner": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "createdAt": "2025-08-08T13:08:19.471Z"
     }
   ],
   "exchanges": [

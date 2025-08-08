@@ -1,69 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Card, Row, Col, Statistic, Button, List, Avatar, message, Flex } from 'antd';
 import { BookOutlined, SwapOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
-import { booksAPI } from '../utils/api';
+import { useBooksStore } from '../stores';
 
 const Dashboard = () => {
-  const [myBooks, setMyBooks] = useState([]);
-  const [recentBooks, setRecentBooks] = useState([]);
-  const [availableForExchange, setAvailableForExchange] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const { 
+    myBooks, 
+    recentBooks, 
+    availableForExchange, 
+    isLoading, 
+    error, 
+    fetchDashboardData,
+    clearError 
+  } = useBooksStore();
   const location = useLocation();
 
+  // Simple fetch on mount
   useEffect(() => {
-    fetchData();
+    handleFetchData();
   }, []);
 
-  // Refresh data when page becomes visible or location changes
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchData();
-      }
-    };
-
-    const handleFocus = () => {
-      fetchData();
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, []);
-
-  // Refresh data when navigating back to dashboard
+  // Optionally refresh when navigating back to dashboard
   useEffect(() => {
     if (location.pathname === '/') {
-      fetchData();
+      handleFetchData();
     }
-  }, [location]);
+  }, [location.pathname]);
 
-  const fetchData = async () => {
+  // Handle error messages
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+      clearError();
+    }
+  }, [error, clearError]);
+
+  const isFetchingRef = useRef(false);
+
+  const handleFetchData = async () => {
+    if (isFetchingRef.current) return; // prevent overlapping requests
+    isFetchingRef.current = true;
     try {
-      const [myBooksResponse, allBooksResponse] = await Promise.all([
-        booksAPI.getMyBooks(),
-        booksAPI.getAll()
-      ]);
-      setMyBooks(myBooksResponse.data);
-      
-      // Get current user ID from my books
-      const currentUserId = myBooksResponse.data.length > 0 ? myBooksResponse.data[0].ownerId : null;
-      
-      // Filter out user's own books for available exchange count and recent books
-      const otherUsersBooks = allBooksResponse.data.filter(book => book.ownerId !== currentUserId);
-      const availableBooks = otherUsersBooks.filter(book => book.status === 'available');
-      
-      setAvailableForExchange(availableBooks.length);
-      setRecentBooks(otherUsersBooks.slice(0, 5));
+      await fetchDashboardData();
     } catch (error) {
-      message.error('Failed to fetch data');
+      // Error is handled by the store and useEffect above
     } finally {
-      setLoading(false);
+      isFetchingRef.current = false;
     }
   };
 
@@ -118,7 +101,7 @@ const Dashboard = () => {
                 </Button>
               </Link>
             }
-            loading={loading}
+            loading={isLoading}
           >
             {myBooks.length === 0 ? (
               <div className="text-center py-8">
@@ -171,7 +154,7 @@ const Dashboard = () => {
                 </Button>
               </Link>
             }
-            loading={loading}
+            loading={isLoading}
           >
             {recentBooks.length === 0 ? (
               <div className="text-center py-8">
