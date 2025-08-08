@@ -38,6 +38,23 @@ const Dashboard = () => {
 
   const isFetchingRef = useRef(false);
 
+  const renderBookAvatar = (book) => {
+    if (book?.coverImageUrl) {
+      return (
+        <Avatar
+          src={book.coverImageUrl}
+          alt={`${book.title} cover`}
+          size="large"
+          onError={(e) => {
+            // hide broken image, antd will fallback to default icon if src removed
+            e.currentTarget.src = '';
+          }}
+        />
+      );
+    }
+    return <Avatar icon={<BookOutlined />} />;
+  };
+
   const handleFetchData = async () => {
     if (isFetchingRef.current) return; // prevent overlapping requests
     isFetchingRef.current = true;
@@ -119,7 +136,7 @@ const Dashboard = () => {
                 renderItem={(book) => (
                   <List.Item>
                     <List.Item.Meta
-                      avatar={<Avatar icon={<BookOutlined />} />}
+                      avatar={renderBookAvatar(book)}
                       title={book.title}
                       description={`by ${book.author} • ${book.condition}`}
                     />
@@ -166,7 +183,7 @@ const Dashboard = () => {
                 renderItem={(book) => (
                   <List.Item>
                     <List.Item.Meta
-                      avatar={<Avatar icon={<UserOutlined />} />}
+                      avatar={renderBookAvatar(book)}
                       title={book.title}
                       description={`by ${book.author} • Owner: ${book.owner?.name}`}
                     />
