@@ -23,11 +23,11 @@
       "genre": "Fiction",
       "condition": "Good",
       "description": "A classic American novel",
-      "status": "available",
-      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "status": "exchanged",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "owner": {
-        "name": "John Doe",
-        "email": "john@example.com"
+        "name": "Jane Smith",
+        "email": "jane@example.com"
       },
       "createdAt": "2025-08-06T18:42:42.432Z",
       "updatedAt": "2025-08-08T14:05:28.308Z"
@@ -39,11 +39,11 @@
       "genre": "Fiction",
       "condition": "Very Good",
       "description": "A powerful story of racial injustice and childhood innocence.\nupdated description 2",
-      "status": "available",
-      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "status": "exchanged",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "owner": {
-        "name": "Jane Smith",
-        "email": "jane@example.com"
+        "name": "John Doe",
+        "email": "john@example.com"
       },
       "createdAt": "2025-08-06T18:42:42.432Z",
       "updatedAt": "2025-08-08T13:55:47.558Z"
@@ -292,8 +292,9 @@
       "requestedBookId": "0c5ec240-4b1b-4ff7-aac9-da6772afc1bd",
       "offeredBookId": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
       "message": "",
-      "status": "pending",
-      "createdAt": "2025-08-08T14:04:58.449Z"
+      "status": "accepted",
+      "createdAt": "2025-08-08T14:04:58.449Z",
+      "respondedAt": "2025-08-08T14:18:05.365Z"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Tabs, List, Button, message, Tag, Avatar, Empty, Modal } from 'antd';
 import { BookOutlined, SwapOutlined, UserOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useExchangeStore } from '../stores';
@@ -18,6 +18,11 @@ const Exchanges = () => {
     getPendingSentCount,
     clearError 
   } = useExchangeStore();
+  
+  // State for confirmation modal
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [selectedExchange, setSelectedExchange] = useState(null);
+  const [selectedAction, setSelectedAction] = useState(null);
 
   useEffect(() => {
     handleFetchExchanges();
@@ -39,19 +44,31 @@ const Exchanges = () => {
     }
   };
 
-  const handleExchangeResponse = async (exchangeId, action) => {
-    Modal.confirm({
-      title: `${action === 'accept' ? 'Accept' : 'Decline'} Exchange Request`,
-      content: `Are you sure you want to ${action} this exchange request? ${action === 'accept' ? 'The books will be swapped immediately.' : 'This action cannot be undone.'}`,
-      onOk: async () => {
-        try {
-          await respondToExchange(exchangeId, action);
-          message.success(`Exchange ${action}ed successfully!`);
-        } catch (error) {
-          // Error is handled by the store
-        }
-      }
-    });
+  const handleExchangeResponse = (exchange, action) => {
+    console.log('handleExchangeResponse called with exchangeId:', exchange.id, 'and action:', action)
+    setSelectedExchange(exchange);
+    setSelectedAction(action);
+    setConfirmModalVisible(true);
+  };
+
+  const handleConfirmExchange = async () => {
+    if (!selectedExchange || !selectedAction) return;
+    
+    try {
+      await respondToExchange(selectedExchange.id, selectedAction);
+      message.success(`Exchange ${selectedAction}ed successfully!`);
+      setConfirmModalVisible(false);
+      setSelectedExchange(null);
+      setSelectedAction(null);
+    } catch (error) {
+      // Error is handled by the store
+    }
+  };
+
+  const handleCancelConfirm = () => {
+    setConfirmModalVisible(false);
+    setSelectedExchange(null);
+    setSelectedAction(null);
   };
 
   const getStatusColor = (status) => {
@@ -92,7 +109,7 @@ const Exchanges = () => {
             icon={<CheckOutlined />} 
             size="small"
             loading={responseLoading}
-            onClick={() => handleExchangeResponse(exchange.id, 'accept')}
+            onClick={() => handleExchangeResponse(exchange, 'accept')}
           >
             Accept
           </Button>,
@@ -101,7 +118,7 @@ const Exchanges = () => {
             icon={<CloseOutlined />} 
             size="small"
             loading={responseLoading}
-            onClick={() => handleExchangeResponse(exchange.id, 'decline')}
+            onClick={() => handleExchangeResponse(exchange, 'decline')}
           >
             Decline
           </Button>
@@ -133,18 +150,18 @@ const Exchanges = () => {
                 <div className="font-semibold text-blue-800 mb-1">
                   {isReceived ? 'They want:' : 'You want:'}
                 </div>
-                <div className="font-medium">{exchange.requestedBook.title}</div>
-                <div className="text-gray-600">by {exchange.requestedBook.author}</div>
-                <Tag size="small" color="cyan">{exchange.requestedBook.condition}</Tag>
+                <div className="font-medium">{exchange.requestedBook?.title || 'Book title unavailable'}</div>
+                <div className="text-gray-600">by {exchange.requestedBook?.author || 'Unknown author'}</div>
+                <Tag size="small" color="cyan">{exchange.requestedBook?.condition || 'Unknown condition'}</Tag>
               </div>
               
               <div className="bg-green-50 p-3 rounded">
                 <div className="font-semibold text-green-800 mb-1">
                   {isReceived ? 'They offer:' : 'You offer:'}
                 </div>
-                <div className="font-medium">{exchange.offeredBook.title}</div>
-                <div className="text-gray-600">by {exchange.offeredBook.author}</div>
-                <Tag size="small" color="green">{exchange.offeredBook.condition}</Tag>
+                <div className="font-medium">{exchange.offeredBook?.title || 'Book title unavailable'}</div>
+                <div className="text-gray-600">by {exchange.offeredBook?.author || 'Unknown author'}</div>
+                <Tag size="small" color="green">{exchange.offeredBook?.condition || 'Unknown condition'}</Tag>
               </div>
             </div>
 
@@ -215,6 +232,52 @@ const Exchanges = () => {
           </TabPane>
         </Tabs>
       </Card>
+      
+      {/* Confirmation Modal */}
+      <Modal
+        title={`${selectedAction === 'accept' ? 'Accept' : 'Decline'} Exchange Request`}
+        open={confirmModalVisible}
+        onOk={handleConfirmExchange}
+        onCancel={handleCancelConfirm}
+        okText={selectedAction === 'accept' ? 'Accept' : 'Decline'}
+        cancelText="Cancel"
+        confirmLoading={responseLoading}
+        okButtonProps={{
+          type: selectedAction === 'accept' ? 'primary' : 'default',
+          danger: selectedAction === 'decline'
+        }}
+      >
+        {selectedExchange && (
+          <div className="space-y-4">
+            <p>
+              Are you sure you want to {selectedAction} this exchange request? 
+              {selectedAction === 'accept' 
+                ? ' The books will be swapped immediately.' 
+                : ' This action cannot be undone.'}
+            </p>
+            
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-800 mb-2">Exchange Details:</h4>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <strong>Requester:</strong> {selectedExchange.requesterName}
+                </div>
+                <div>
+                  <strong>They want:</strong> "{selectedExchange.requestedBook?.title || 'Book unavailable'}" by {selectedExchange.requestedBook?.author || 'Unknown author'}
+                </div>
+                <div>
+                  <strong>They offer:</strong> "{selectedExchange.offeredBook?.title || 'Book unavailable'}" by {selectedExchange.offeredBook?.author || 'Unknown author'}
+                </div>
+                {selectedExchange.message && (
+                  <div>
+                    <strong>Message:</strong> "{selectedExchange.message}"
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
