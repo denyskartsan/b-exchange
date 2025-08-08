@@ -192,20 +192,20 @@ const Exchanges = () => {
       </div>
 
       <Card>
-        <Tabs defaultActiveKey="received" size="large">
+        <Tabs defaultActiveKey="pending-received" size="large">
           <TabPane 
-            tab={`Received (${getPendingReceivedCount()})`} 
-            key="received"
+            tab={`Pending Received (${getPendingReceivedCount()})`} 
+            key="pending-received"
           >
-            {receivedExchanges.length === 0 ? (
+            {receivedExchanges.filter(ex => ex.status === 'pending').length === 0 ? (
               <Empty 
                 image={<SwapOutlined className="text-4xl text-gray-400" />}
-                description="No exchange requests received"
+                description="No pending exchange requests received"
               />
             ) : (
               <List
                 loading={isLoading}
-                dataSource={receivedExchanges}
+                dataSource={receivedExchanges.filter(ex => ex.status === 'pending')}
                 renderItem={(exchange) => renderExchangeItem(exchange, true)}
                 pagination={{ pageSize: 5, showSizeChanger: false }}
               />
@@ -213,22 +213,67 @@ const Exchanges = () => {
           </TabPane>
 
           <TabPane 
-            tab={`Sent (${getPendingSentCount()})`} 
-            key="sent"
+            tab={`Pending Sent (${getPendingSentCount()})`} 
+            key="pending-sent"
           >
-            {sentExchanges.length === 0 ? (
+            {sentExchanges.filter(ex => ex.status === 'pending').length === 0 ? (
               <Empty 
                 image={<SwapOutlined className="text-4xl text-gray-400" />}
-                description="No exchange requests sent"
+                description="No pending exchange requests sent"
               />
             ) : (
               <List
                 loading={isLoading}
-                dataSource={sentExchanges}
+                dataSource={sentExchanges.filter(ex => ex.status === 'pending')}
                 renderItem={(exchange) => renderExchangeItem(exchange, false)}
                 pagination={{ pageSize: 5, showSizeChanger: false }}
               />
             )}
+          </TabPane>
+
+          <TabPane 
+            tab={`History (${receivedExchanges.filter(ex => ex.status !== 'pending').length + sentExchanges.filter(ex => ex.status !== 'pending').length})`} 
+            key="history"
+          >
+            <Tabs type="card" size="small">
+              <TabPane 
+                tab={`Received (${receivedExchanges.filter(ex => ex.status !== 'pending').length})`} 
+                key="history-received"
+              >
+                {receivedExchanges.filter(ex => ex.status !== 'pending').length === 0 ? (
+                  <Empty 
+                    image={<SwapOutlined className="text-4xl text-gray-400" />}
+                    description="No completed exchange requests received"
+                  />
+                ) : (
+                  <List
+                    loading={isLoading}
+                    dataSource={receivedExchanges.filter(ex => ex.status !== 'pending')}
+                    renderItem={(exchange) => renderExchangeItem(exchange, true)}
+                    pagination={{ pageSize: 5, showSizeChanger: false }}
+                  />
+                )}
+              </TabPane>
+
+              <TabPane 
+                tab={`Sent (${sentExchanges.filter(ex => ex.status !== 'pending').length})`} 
+                key="history-sent"
+              >
+                {sentExchanges.filter(ex => ex.status !== 'pending').length === 0 ? (
+                  <Empty 
+                    image={<SwapOutlined className="text-4xl text-gray-400" />}
+                    description="No completed exchange requests sent"
+                  />
+                ) : (
+                  <List
+                    loading={isLoading}
+                    dataSource={sentExchanges.filter(ex => ex.status !== 'pending')}
+                    renderItem={(exchange) => renderExchangeItem(exchange, false)}
+                    pagination={{ pageSize: 5, showSizeChanger: false }}
+                  />
+                )}
+              </TabPane>
+            </Tabs>
           </TabPane>
         </Tabs>
       </Card>
