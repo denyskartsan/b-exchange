@@ -45,7 +45,6 @@ const Exchanges = () => {
   };
 
   const handleExchangeResponse = (exchange, action) => {
-    console.log('handleExchangeResponse called with exchangeId:', exchange.id, 'and action:', action)
     setSelectedExchange(exchange);
     setSelectedAction(action);
     setConfirmModalVisible(true);
