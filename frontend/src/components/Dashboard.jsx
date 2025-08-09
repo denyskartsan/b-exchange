@@ -154,7 +154,7 @@ const Dashboard = () => {
             {myBooks.length > 3 && (
               <div className="text-center mt-4">
                 <Link to="/books?filter=my">
-                  <Button type="link">View All My Books</Button>
+                  <Button type="link">View All Books</Button>
                 </Link>
               </div>
             )}
