@@ -16,9 +16,9 @@ const BookList = () => {
   // Local state for filtering
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [genreFilter, setGenreFilter] = useState('');
-  const [conditionFilter, setConditionFilter] = useState('');
-  const [ownershipFilter, setOwnershipFilter] = useState('');
+  const [genreFilter, setGenreFilter] = useState(undefined);
+  const [conditionFilter, setConditionFilter] = useState(undefined);
+  const [ownershipFilter, setOwnershipFilter] = useState(undefined);
   
   // Exchange related local state
   const [selectedOfferedBook, setSelectedOfferedBook] = useState(null);
@@ -183,7 +183,7 @@ const BookList = () => {
           <Col xs={12} sm={6} md={4}>
             <Select
               data-testid="ownership-filter-select"
-              placeholder="Filter by ownership"
+              placeholder="Ownership"
               value={ownershipFilter}
               onChange={setOwnershipFilter}
               allowClear
@@ -202,8 +202,9 @@ const BookList = () => {
               onChange={setGenreFilter}
               allowClear
               className="w-full"
+              notFoundContent={isLoading ? 'Loading...' : 'No genres available'}
             >
-              {genres.map(genre => (
+              {genres.length > 0 && genres.map(genre => (
                 <Option key={genre} value={genre}>{genre}</Option>
               ))}
             </Select>
@@ -216,8 +217,9 @@ const BookList = () => {
               onChange={setConditionFilter}
               allowClear
               className="w-full"
+              notFoundContent={isLoading ? 'Loading...' : 'No conditions available'}
             >
-              {conditions.map(condition => (
+              {conditions.length > 0 && conditions.map(condition => (
                 <Option key={condition} value={condition}>{condition}</Option>
               ))}
             </Select>
