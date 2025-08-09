@@ -61,7 +61,7 @@ const Dashboard = () => {
     try {
       await fetchDashboardData();
     } catch (error) {
-      // Error is handled by the store and useEffect above
+      console.log(error)
     } finally {
       isFetchingRef.current = false;
     }

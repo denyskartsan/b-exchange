@@ -38,11 +38,11 @@
       "genre": "Technology",
       "condition": "Like New",
       "description": "A handbook of agile software craftsmanship",
-      "status": "available",
-      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "status": "exchanged-available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "owner": {
-        "name": "Jane Smith",
-        "email": "jane@example.com"
+        "name": "John Doe",
+        "email": "john@example.com"
       },
       "createdAt": "2025-08-09T11:15:00.000Z"
     },
@@ -68,11 +68,11 @@
       "genre": "Fiction",
       "condition": "Very Good",
       "description": "A powerful story of racial injustice and childhood innocence",
-      "status": "available",
-      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "status": "exchanged-available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "owner": {
-        "name": "John Doe",
-        "email": "john@example.com"
+        "name": "Jane Smith",
+        "email": "jane@example.com"
       },
       "createdAt": "2025-08-09T11:15:00.000Z"
     },
@@ -187,6 +187,19 @@
       "status": "declined",
       "createdAt": "2025-08-09T12:20:26.053Z",
       "respondedAt": "2025-08-09T12:25:24.792Z"
+    },
+    {
+      "id": "9c911675-3c99-43cc-9214-0e5f738accc7",
+      "requesterId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "requesterName": "John Doe",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "ownerName": "Jane Smith",
+      "requestedBookId": "book-john-2",
+      "offeredBookId": "book-jane-1",
+      "message": "",
+      "status": "accepted",
+      "createdAt": "2025-08-09T12:34:29.189Z",
+      "respondedAt": "2025-08-09T12:34:44.051Z"
     }
   ]
 }

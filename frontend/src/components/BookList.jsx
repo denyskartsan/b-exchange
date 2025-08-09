@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider, Popconfirm, Form, Rate } from 'antd';
 import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined, EditOutlined, StarFilled, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useBooksStore, useAuthStore, useUIStore, useExchangeStore } from '../stores';
 import BookForm from './BookForm';
-import { BOOK_CONDITIONS, BOOK_GENRES, getConditionColor, getConditionStars } from '../constants/bookConstants';
+import ExchangeConfirmationModal from './ExchangeConfirmationModal';
+import { BOOK_CONDITIONS, getConditionColor, getConditionStars } from '../constants/bookConstants';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -62,7 +63,7 @@ const BookList = () => {
     try {
       await fetchBooks();
     } catch (error) {
-      // Error is handled by the store
+      console.log(error)
     }
   };
 
@@ -107,7 +108,7 @@ const BookList = () => {
       }
       openModal('exchange', book);
     } catch (error) {
-      message.error('Failed to load your books');
+      message.error('Failed to load your books', error);
     }
   };
 
@@ -156,13 +157,6 @@ const BookList = () => {
     } catch (error) {
       message.error(error.response?.data?.message || 'Failed to delete book');
     }
-  };
-
-  // Find pending exchange request where someone wants this book from the current user
-  const getPendingExchangeForBook = (bookId) => {
-    return receivedExchanges.find(exchange => 
-      exchange.requestedBook?.id === bookId && exchange.status === 'pending'
-    );
   };
   
   // Find pending exchange request where current user can respond (they want your book, offering theirs)
@@ -349,7 +343,6 @@ const BookList = () => {
                   </div>
                 }
                 actions={(() => {
-                  const pendingExchangeForMyBook = getPendingExchangeForBook(book.id);
                   const pendingExchangeWhereICanRespond = getPendingExchangeWhereCanRespond(book.id);
                   
                   if (isOwnBook(book)) {
@@ -479,7 +472,9 @@ const BookList = () => {
               message.success('Book updated');
               setEditModalVisible(false);
               setEditingBook(null);
-            } catch (_) {}
+            } catch (error) {
+              console.error(error);
+            }
           }}
           okText="Save"
           cancelText="Cancel"
@@ -493,7 +488,7 @@ const BookList = () => {
                 setEditModalVisible(false);
                 setEditingBook(null);
               } catch (error) {
-                // Error handled by store
+                console.error(error);
               }
             }}
             initialValues={{
@@ -632,55 +627,14 @@ const BookList = () => {
       </Modal>
 
       {/* Exchange Response Confirmation Modal */}
-      <Modal
-        title={`${selectedAction === 'accept' ? 'Accept' : 'Decline'} Exchange Request`}
+      <ExchangeConfirmationModal
         open={confirmModalVisible}
-        onOk={handleConfirmExchangeResponse}
+        exchange={selectedExchange}
+        action={selectedAction}
+        onConfirm={handleConfirmExchangeResponse}
         onCancel={handleCancelExchangeResponse}
-        okText={selectedAction === 'accept' ? 'Accept' : 'Decline'}
-        okButtonProps={{
-          danger: selectedAction === 'decline',
-          type: selectedAction === 'accept' ? 'primary' : 'default'
-        }}
-        cancelText="Cancel"
-        confirmLoading={responseLoading}
-      >
-        {selectedExchange && (
-          <div className="space-y-4">
-            <p>
-              Are you sure you want to {selectedAction} this exchange request?
-              {selectedAction === 'accept' && ' The books will be swapped immediately.'}
-            </p>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-3">Exchange Details:</h4>
-              
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Requester:</strong> {selectedExchange.requesterName || 'Unknown'}
-                </div>
-                
-                <div>
-                  <strong>They want:</strong> "{selectedExchange.requestedBook?.title}" by {selectedExchange.requestedBook?.author}
-                </div>
-                
-                <div>
-                  <strong>They offer:</strong> "{selectedExchange.offeredBook?.title}" by {selectedExchange.offeredBook?.author}
-                </div>
-                
-                {selectedExchange.message && (
-                  <div>
-                    <strong>Message:</strong>
-                    <div className="italic text-gray-600 mt-1">
-                      "{selectedExchange.message}"
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </Modal>
+        loading={responseLoading}
+      />
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Tabs, List, Button, message, Tag, Avatar, Empty, Modal } from 'antd';
+import { Card, Tabs, List, Button, message, Tag, Avatar, Empty } from 'antd';
 import { BookOutlined, SwapOutlined, UserOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useExchangeStore } from '../stores';
+import ExchangeConfirmationModal from './ExchangeConfirmationModal';
 
 const { TabPane } = Tabs;
 
@@ -40,7 +41,7 @@ const Exchanges = () => {
     try {
       await fetchAllExchanges();
     } catch (error) {
-      // Error is handled by the store and useEffect above
+     console.log(error)
     }
   };
 
@@ -60,7 +61,7 @@ const Exchanges = () => {
       setSelectedExchange(null);
       setSelectedAction(null);
     } catch (error) {
-      // Error is handled by the store
+      console.log(error);
     }
   };
 
@@ -105,7 +106,7 @@ const Exchanges = () => {
         minute: '2-digit'
       });
     } catch (error) {
-      return 'Invalid date';
+      return console.log('invalid date', error)
     }
   };
 
@@ -295,50 +296,14 @@ const Exchanges = () => {
       </Card>
       
       {/* Confirmation Modal */}
-      <Modal
-        title={`${selectedAction === 'accept' ? 'Accept' : 'Decline'} Exchange Request`}
+      <ExchangeConfirmationModal
         open={confirmModalVisible}
-        onOk={handleConfirmExchange}
+        exchange={selectedExchange}
+        action={selectedAction}
+        onConfirm={handleConfirmExchange}
         onCancel={handleCancelConfirm}
-        okText={selectedAction === 'accept' ? 'Accept' : 'Decline'}
-        cancelText="Cancel"
-        confirmLoading={responseLoading}
-        okButtonProps={{
-          type: selectedAction === 'accept' ? 'primary' : 'default',
-          danger: selectedAction === 'decline'
-        }}
-      >
-        {selectedExchange && (
-          <div className="space-y-4">
-            <p>
-              Are you sure you want to {selectedAction} this exchange request? 
-              {selectedAction === 'accept' 
-                ? ' The books will be swapped immediately.' 
-                : ' This action cannot be undone.'}
-            </p>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-2">Exchange Details:</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Requester:</strong> {selectedExchange.requesterName}
-                </div>
-                <div>
-                  <strong>They want:</strong> "{selectedExchange.requestedBook?.title || 'Book unavailable'}" by {selectedExchange.requestedBook?.author || 'Unknown author'}
-                </div>
-                <div>
-                  <strong>They offer:</strong> "{selectedExchange.offeredBook?.title || 'Book unavailable'}" by {selectedExchange.offeredBook?.author || 'Unknown author'}
-                </div>
-                {selectedExchange.message && (
-                  <div>
-                    <strong>Message:</strong> "{selectedExchange.message}"
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </Modal>
+        loading={responseLoading}
+      />
     </div>
   );
 };
