@@ -1,0 +1,18 @@
+/* Fix badge styling to preserve menu item colors */
+.ant-menu-item-link {
+  color: inherit !important;
+}
+
+.badge-menu-item,
+.badge-menu-item .ant-badge-count {
+  color: inherit !important;
+}
+
+/* Ensure selected menu item maintains its blue color */
+.ant-menu-horizontal .ant-menu-item-selected .ant-menu-item-link {
+  color: rgb(22, 119, 255) !important;
+}
+
+.ant-menu-horizontal .ant-menu-item-selected .badge-menu-item {
+  color: rgb(22, 119, 255) !important;
+}

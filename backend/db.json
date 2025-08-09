@@ -53,7 +53,7 @@
       "genre": "Fiction",
       "condition": "Good",
       "description": "A classic coming-of-age story",
-      "status": "available",
+      "status": "pending-exchange",
       "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "owner": {
         "name": "Jane Smith",
@@ -83,7 +83,7 @@
       "genre": "Fiction",
       "condition": "Like New",
       "description": "Dystopian social science fiction novel",
-      "status": "available",
+      "status": "pending-exchange",
       "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "owner": {
         "name": "John Doe",
@@ -161,6 +161,18 @@
       "status": "declined",
       "createdAt": "2025-08-09T11:45:23.516Z",
       "respondedAt": "2025-08-09T11:46:02.674Z"
+    },
+    {
+      "id": "e2accb6a-01b3-49a8-854a-75f456766f97",
+      "requesterId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "requesterName": "John Doe",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "ownerName": "Jane Smith",
+      "requestedBookId": "book-john-3",
+      "offeredBookId": "book-jane-2",
+      "message": "",
+      "status": "pending",
+      "createdAt": "2025-08-09T12:09:52.677Z"
     }
   ]
 }

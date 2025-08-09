@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layout, Menu, Avatar, Dropdown, Flex } from 'antd';
+import { Layout, Menu, Avatar, Dropdown, Flex, Badge } from 'antd';
 import { BookOutlined, PlusOutlined, UserOutlined, LogoutOutlined, SwapOutlined } from '@ant-design/icons';
-import { useAuthStore } from '../stores';
+import { useAuthStore, useExchangeStore } from '../stores';
+import './Header.css';
 
 const { Header: AntHeader } = Layout;
 
 const Header = ({ user, onLogout }) => {
   const { getCurrentUser } = useAuthStore();
+  const { fetchReceivedExchanges, getPendingReceivedCount } = useExchangeStore();
   const currentUser = user || getCurrentUser();
   const location = useLocation();
+  const pendingCount = getPendingReceivedCount();
+
+  // Fetch pending exchanges when component mounts and periodically
+  useEffect(() => {
+    if (currentUser) {
+      fetchReceivedExchanges().catch(() => {});
+      
+      // Refresh every 30 seconds to show updated counts
+      const interval = setInterval(() => {
+        fetchReceivedExchanges().catch(() => {});
+      }, 30000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [currentUser, fetchReceivedExchanges]);
 
   const menuItems = [
     {
@@ -25,7 +42,13 @@ const Header = ({ user, onLogout }) => {
     {
       key: '/exchanges',
       icon: <SwapOutlined />,
-      label: <Link to="/exchanges">Exchanges</Link>,
+      label: (
+        <Link to="/exchanges" className="ant-menu-item-link">
+          <Badge count={pendingCount} size="small" offset={[10, 0]} className="badge-menu-item">
+            Exchanges
+          </Badge>
+        </Link>
+      ),
     },
     {
       key: '/add-book',
