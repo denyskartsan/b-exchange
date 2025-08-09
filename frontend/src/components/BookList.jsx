@@ -120,6 +120,9 @@ const BookList = () => {
       closeModal('exchange');
       setSelectedOfferedBook(null);
       setExchangeMessage('');
+      
+      // Refresh book list to show updated statuses
+      await handleFetchBooks();
     } catch (error) {
       message.error(error.response?.data?.message || 'Failed to send exchange request');
     } finally {
@@ -155,6 +158,24 @@ const BookList = () => {
       'Poor': 'red'
     };
     return colors[condition] || 'default';
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      'available': 'green',
+      'exchanged-available': 'purple', 
+      'pending-exchange': 'orange'
+    };
+    return colors[status] || 'default';
+  };
+
+  const getStatusText = (status) => {
+    const texts = {
+      'available': 'Available',
+      'exchanged-available': 'Previously Exchanged',
+      'pending-exchange': 'Pending Exchange'
+    };
+    return texts[status] || status;
   };
 
   const genres = [...new Set(books.map(book => book.genre))].filter(Boolean);
@@ -323,12 +344,9 @@ const BookList = () => {
                           <Tag color={getConditionColor(book.condition)}>
                             {book.condition}
                           </Tag>
-                          {book.status === 'exchanged-available' && (
-                            <Tag color="purple">Previously Exchanged</Tag>
-                          )}
-                          {book.status === 'pending-exchange' && (
-                            <Tag color="orange">Pending Exchange</Tag>
-                          )}
+                          <Tag color={getStatusColor(book.status)}>
+                            {getStatusText(book.status)}
+                          </Tag>
                         </div>
                       </div>
                       <div className="flex items-center text-xs text-gray-500 mt-2">

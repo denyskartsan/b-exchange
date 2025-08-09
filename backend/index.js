@@ -386,6 +386,10 @@ app.post('/api/exchanges', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: 'Both books must be available for exchange' });
     }
 
+    // Set books to pending-exchange status
+    requestedBook.status = 'pending-exchange';
+    offeredBook.status = 'pending-exchange';
+
     // Create exchange request (store only IDs, not full book data)
     const exchangeRequest = {
       id: uuidv4(),
@@ -506,11 +510,11 @@ app.put('/api/exchanges/:id/respond', authenticateToken, async (req, res) => {
     exchange.status = action === 'accept' ? 'accepted' : 'declined';
     exchange.respondedAt = new Date().toISOString();
 
-    if (action === 'accept') {
-      // Update book ownership
-      const requestedBook = db.data.books.find(b => b.id === exchange.requestedBookId);
-      const offeredBook = db.data.books.find(b => b.id === exchange.offeredBookId);
+    // Get books to update their status
+    const requestedBook = db.data.books.find(b => b.id === exchange.requestedBookId);
+    const offeredBook = db.data.books.find(b => b.id === exchange.offeredBookId);
 
+    if (action === 'accept') {
       if (requestedBook && offeredBook) {
         // Swap ownership
         const tempOwnerId = requestedBook.ownerId;
@@ -522,7 +526,16 @@ app.put('/api/exchanges/:id/respond', authenticateToken, async (req, res) => {
         offeredBook.ownerId = tempOwnerId;
         offeredBook.owner = tempOwner;
         
-        // Set books as available after exchange (they can be exchanged again)
+        // Set books as exchanged-available after successful exchange
+        requestedBook.status = 'exchanged-available';
+        offeredBook.status = 'exchanged-available';
+      }
+    } else {
+      // Declined: reset books to their original available status
+      if (requestedBook && offeredBook) {
+        // Check if the books were previously exchanged or just available
+        // For now, we'll set them back to available
+        // In a more sophisticated system, we'd track the previous status
         requestedBook.status = 'available';
         offeredBook.status = 'available';
       }

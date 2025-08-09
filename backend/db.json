@@ -23,11 +23,11 @@
       "genre": "Fiction",
       "condition": "Very Good",
       "description": "A classic American novel about the Jazz Age",
-      "status": "available",
-      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "status": "exchanged-available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "owner": {
-        "name": "John Doe",
-        "email": "john@example.com"
+        "name": "Jane Smith",
+        "email": "jane@example.com"
       },
       "createdAt": "2025-08-09T11:15:00.000Z"
     },
@@ -99,10 +99,10 @@
       "condition": "Good",
       "description": "Classic romance novel",
       "status": "available",
-      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "owner": {
-        "name": "Jane Smith",
-        "email": "jane@example.com"
+        "name": "John Doe",
+        "email": "john@example.com"
       },
       "createdAt": "2025-08-09T11:15:00.000Z"
     }
@@ -133,6 +133,32 @@
       "status": "accepted",
       "createdAt": "2025-08-09T11:29:41.053Z",
       "respondedAt": "2025-08-09T11:30:37.516Z"
+    },
+    {
+      "id": "965e3af5-f35b-4d55-acfe-05bfb9ce2a98",
+      "requesterId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "requesterName": "John Doe",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "ownerName": "Jane Smith",
+      "requestedBookId": "book-jane-3",
+      "offeredBookId": "book-john-1",
+      "message": "pride for gatsby",
+      "status": "accepted",
+      "createdAt": "2025-08-09T11:36:03.128Z",
+      "respondedAt": "2025-08-09T11:44:31.608Z"
+    },
+    {
+      "id": "7aa5318a-3573-4e53-b90a-3cf3dd2422e5",
+      "requesterId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "requesterName": "Jane Smith",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "ownerName": "John Doe",
+      "requestedBookId": "book-jane-3",
+      "offeredBookId": "book-john-2",
+      "message": "",
+      "status": "declined",
+      "createdAt": "2025-08-09T11:45:23.516Z",
+      "respondedAt": "2025-08-09T11:46:02.674Z"
     }
   ]
 }

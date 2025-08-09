@@ -143,9 +143,19 @@ const Dashboard = () => {
                     <div className={`px-2 py-1 rounded text-xs font-medium ${
                       book.status === 'available' 
                         ? 'bg-green-100 text-green-800' 
+                        : book.status === 'exchanged-available'
+                        ? 'bg-purple-100 text-purple-800'
+                        : book.status === 'pending-exchange'
+                        ? 'bg-orange-100 text-orange-800'
                         : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {book.status}
+                      {book.status === 'available' 
+                        ? 'Available' 
+                        : book.status === 'exchanged-available'
+                        ? 'Previously Exchanged'
+                        : book.status === 'pending-exchange'
+                        ? 'Pending Exchange'
+                        : book.status}
                     </div>
                   </List.Item>
                 )}
