@@ -89,13 +89,24 @@ const Exchanges = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    if (!dateString) return 'Unknown date';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return 'Invalid date';
+    }
   };
 
   const renderExchangeItem = (exchange, isReceived) => (
@@ -139,9 +150,15 @@ const Exchanges = () => {
         description={
           <div className="space-y-3">
             <div className="text-sm">
-              <strong>
-                {isReceived ? exchange.requesterName : exchange.ownerName}
-              </strong> wants to exchange:
+              {isReceived ? (
+                <span>
+                  <strong>{exchange.requesterName}</strong> wants to exchange:
+                </span>
+              ) : (
+                <span>
+                  You want to exchange with <strong>{exchange.ownerName}</strong>:
+                </span>
+              )}
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">

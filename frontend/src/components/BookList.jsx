@@ -301,9 +301,9 @@ const BookList = () => {
                       type="primary"
                       icon={<SwapOutlined />}
                       onClick={() => handleExchange(book)}
-                      disabled={book.status !== 'available'}
+                      disabled={book.status === 'pending-exchange'}
                     >
-                      {book.status === 'available' ? 'Exchange' : 'Not Available'}
+                      {book.status === 'pending-exchange' ? 'Pending Exchange' : 'Exchange'}
                     </Button>
                   )
                 ]}
@@ -323,8 +323,11 @@ const BookList = () => {
                           <Tag color={getConditionColor(book.condition)}>
                             {book.condition}
                           </Tag>
-                          {book.status === 'exchanged' && (
-                            <Tag color="purple">Exchanged</Tag>
+                          {book.status === 'exchanged-available' && (
+                            <Tag color="purple">Previously Exchanged</Tag>
+                          )}
+                          {book.status === 'pending-exchange' && (
+                            <Tag color="orange">Pending Exchange</Tag>
                           )}
                         </div>
                       </div>
@@ -437,7 +440,7 @@ const BookList = () => {
               ) : (
                 <div className="max-h-60 overflow-y-auto border rounded-lg">
               <List
-                dataSource={myBooks.filter(book => book.status === 'available')}
+                dataSource={myBooks.filter(book => book.status === 'available' || book.status === 'exchanged-available')}
                 renderItem={(book) => (
                       <List.Item
                         className={`cursor-pointer transition-colors ${

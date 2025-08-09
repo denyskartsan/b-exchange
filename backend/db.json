@@ -5,204 +5,134 @@
       "name": "John Doe",
       "email": "john@example.com",
       "password": "$2b$10$o7QoYFATXDswUpc.7gvUIOJXP9VEn2gwUoHeF5mcSRMXUXwEebWNu",
-      "createdAt": "2025-08-06T18:42:42.431Z"
+      "createdAt": "2025-08-09T11:15:00.000Z"
     },
     {
       "id": "8787a444-5165-440b-a635-a334f2b7144e",
       "name": "Jane Smith",
       "email": "jane@example.com",
       "password": "$2b$10$o7QoYFATXDswUpc.7gvUIOJXP9VEn2gwUoHeF5mcSRMXUXwEebWNu",
-      "createdAt": "2025-08-06T18:42:42.432Z"
+      "createdAt": "2025-08-09T11:15:00.000Z"
     }
   ],
   "books": [
     {
-      "id": "0c5ec240-4b1b-4ff7-aac9-da6772afc1bd",
-      "title": "The Great Gatsby 2",
+      "id": "book-john-1",
+      "title": "The Great Gatsby",
       "author": "F. Scott Fitzgerald",
       "genre": "Fiction",
-      "condition": "Good",
-      "description": "A classic American novel",
-      "status": "exchanged",
-      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
-      "owner": {
-        "name": "Jane Smith",
-        "email": "jane@example.com"
-      },
-      "createdAt": "2025-08-06T18:42:42.432Z",
-      "updatedAt": "2025-08-08T14:05:28.308Z"
-    },
-    {
-      "id": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
-      "title": "To Kill a Mockingbird 2",
-      "author": "Harper Lee 2",
-      "genre": "Fiction",
       "condition": "Very Good",
-      "description": "A powerful story of racial injustice and childhood innocence.\nupdated description 2",
-      "status": "exchanged",
+      "description": "A classic American novel about the Jazz Age",
+      "status": "available",
       "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "owner": {
         "name": "John Doe",
         "email": "john@example.com"
       },
-      "createdAt": "2025-08-06T18:42:42.432Z",
-      "updatedAt": "2025-08-08T13:55:47.558Z"
+      "createdAt": "2025-08-09T11:15:00.000Z"
     },
     {
-      "id": "a87e3397-6c00-4b77-a488-e9c4823e94e0",
+      "id": "book-john-2",
       "title": "Clean Code",
       "author": "Robert C. Martin",
       "genre": "Technology",
       "condition": "Like New",
       "description": "A handbook of agile software craftsmanship",
       "status": "available",
-      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
-      "owner": {
-        "name": "John Doe",
-        "email": "john@example.com"
-      },
-      "createdAt": "2025-08-06T18:42:42.432Z"
-    },
-    {
-      "id": "0faac732-7298-4ed8-8c95-b849d7bc00d4",
-      "title": "1984",
-      "author": "George Orwell",
-      "genre": "Fiction",
-      "condition": "Very Good",
-      "description": "",
-      "status": "exchanged",
       "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "owner": {
         "name": "Jane Smith",
         "email": "jane@example.com"
       },
-      "createdAt": "2025-08-06T19:39:13.889Z"
+      "createdAt": "2025-08-09T11:15:00.000Z"
     },
     {
-      "id": "d4ac1b30-0a65-45d6-9c98-f4b26c7beff3",
+      "id": "book-john-3",
       "title": "The Catcher in the Rye",
       "author": "J.D. Salinger",
       "genre": "Fiction",
+      "condition": "Good",
+      "description": "A classic coming-of-age story",
+      "status": "available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "owner": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "createdAt": "2025-08-09T11:15:00.000Z"
+    },
+    {
+      "id": "book-jane-1",
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "genre": "Fiction",
       "condition": "Very Good",
-      "description": "A classic coming-of-age story about teenager Holden Caulfield.",
+      "description": "A powerful story of racial injustice and childhood innocence",
       "status": "available",
       "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "owner": {
         "name": "John Doe",
         "email": "john@example.com"
       },
-      "createdAt": "2025-08-06T19:42:59.899Z"
+      "createdAt": "2025-08-09T11:15:00.000Z"
     },
     {
-      "id": "e8bd05ac-3089-46f4-ba9c-6f6a1fd9ebb9",
-      "title": "test 2",
-      "author": "test 2",
-      "genre": "Non-Fiction",
-      "condition": "Very Good",
-      "description": "",
-      "status": "exchanged",
-      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
-      "owner": {
-        "name": "John Doe",
-        "email": "john@example.com"
-      },
-      "coverImageUrl": "https://marketplace.canva.com/EAGKkPbakT4/1/0/251w/canva-purple-sky-book-cover-_DoLgxCzP90.jpg",
-      "createdAt": "2025-08-08T13:30:51.048Z"
-    },
-    {
-      "id": "c328aed7-0405-4cb0-98aa-ede659af400e",
-      "title": "The Catcher in the Rye",
-      "author": "J.D. Salinger",
-      "genre": "Fiction",
-      "condition": "Very Good",
-      "description": "A classic coming-of-age story about teenager Holden Caulfield.",
-      "status": "available",
-      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
-      "owner": {
-        "name": "John Doe",
-        "email": "john@example.com"
-      },
-      "createdAt": "2025-08-08T15:42:52.326Z"
-    },
-    {
-      "id": "7737f6a7-f9ff-4a79-ae31-ac511f937c31",
+      "id": "book-jane-2",
       "title": "1984",
       "author": "George Orwell",
       "genre": "Fiction",
-      "condition": "Very Good",
-      "description": "",
+      "condition": "Like New",
+      "description": "Dystopian social science fiction novel",
       "status": "available",
       "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "owner": {
         "name": "John Doe",
         "email": "john@example.com"
       },
-      "createdAt": "2025-08-08T15:43:04.890Z"
+      "createdAt": "2025-08-09T11:15:00.000Z"
     },
     {
-      "id": "713b0843-264f-4f0b-89e7-2e281e4fa4b6",
-      "title": "Test Book",
-      "author": "Test Author",
-      "genre": "Fiction",
-      "condition": "Very Good",
-      "description": "",
+      "id": "book-jane-3",
+      "title": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "genre": "Romance",
+      "condition": "Good",
+      "description": "Classic romance novel",
       "status": "available",
-      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "owner": {
-        "name": "John Doe",
-        "email": "john@example.com"
+        "name": "Jane Smith",
+        "email": "jane@example.com"
       },
-      "createdAt": "2025-08-08T15:43:27.516Z"
+      "createdAt": "2025-08-09T11:15:00.000Z"
     }
   ],
   "exchanges": [
     {
-      "id": "c2c8d577-db3b-4275-8797-ad6889cfc20e",
+      "id": "437baf0d-56e1-4f01-b0ad-beb05c0c7669",
       "requesterId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "requesterName": "John Doe",
       "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "ownerName": "Jane Smith",
-      "requestedBook": {
-        "id": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
-        "title": "To Kill a Mockingbird",
-        "author": "Harper Lee",
-        "condition": "Very Good"
-      },
-      "offeredBook": {
-        "id": "a87e3397-6c00-4b77-a488-e9c4823e94e0",
-        "title": "Clean Code",
-        "author": "Robert C. Martin",
-        "condition": "Like New"
-      },
-      "message": "let's exchange",
-      "status": "pending",
-      "createdAt": "2025-08-06T19:11:04.498Z"
+      "requestedBookId": "book-jane-1",
+      "offeredBookId": "book-john-2",
+      "message": "I give my Clean Code for your 'To kill'",
+      "status": "accepted",
+      "createdAt": "2025-08-09T11:21:25.009Z",
+      "respondedAt": "2025-08-09T11:22:42.329Z"
     },
     {
-      "id": "95a6723e-e6e0-42c2-8af1-6f4aa6b7a6ad",
+      "id": "17879bce-8b5a-4c83-8c2f-bee109c5455d",
       "requesterId": "8787a444-5165-440b-a635-a334f2b7144e",
       "requesterName": "Jane Smith",
       "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "ownerName": "John Doe",
-      "requestedBookId": "0c5ec240-4b1b-4ff7-aac9-da6772afc1bd",
-      "offeredBookId": "9d937d5d-1cf0-43a7-a6ad-556671c3f66b",
+      "requestedBookId": "book-john-3",
+      "offeredBookId": "book-jane-2",
       "message": "",
       "status": "accepted",
-      "createdAt": "2025-08-08T14:04:58.449Z",
-      "respondedAt": "2025-08-08T14:18:05.365Z"
-    },
-    {
-      "id": "1b16576c-7f8e-4533-9530-69e0d993d7b3",
-      "requesterId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
-      "requesterName": "John Doe",
-      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
-      "ownerName": "Jane Smith",
-      "requestedBookId": "e8bd05ac-3089-46f4-ba9c-6f6a1fd9ebb9",
-      "offeredBookId": "0faac732-7298-4ed8-8c95-b849d7bc00d4",
-      "message": "Hi Jane.",
-      "status": "accepted",
-      "createdAt": "2025-08-08T15:35:00.412Z",
-      "respondedAt": "2025-08-08T15:36:38.264Z"
+      "createdAt": "2025-08-09T11:29:41.053Z",
+      "respondedAt": "2025-08-09T11:30:37.516Z"
     }
   ]
 }

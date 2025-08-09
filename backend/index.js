@@ -380,8 +380,9 @@ app.post('/api/exchanges', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: 'You cannot request your own book' });
     }
 
-    // Check if both books are available
-    if (requestedBook.status !== 'available' || offeredBook.status !== 'available') {
+    // Check if both books are available for exchange
+    const validStatuses = ['available', 'exchanged-available'];
+    if (!validStatuses.includes(requestedBook.status) || !validStatuses.includes(offeredBook.status)) {
       return res.status(400).json({ message: 'Both books must be available for exchange' });
     }
 
@@ -521,8 +522,9 @@ app.put('/api/exchanges/:id/respond', authenticateToken, async (req, res) => {
         offeredBook.ownerId = tempOwnerId;
         offeredBook.owner = tempOwner;
         
-        requestedBook.status = 'exchanged';
-        offeredBook.status = 'exchanged';
+        // Set books as available after exchange (they can be exchanged again)
+        requestedBook.status = 'available';
+        offeredBook.status = 'available';
       }
     }
 

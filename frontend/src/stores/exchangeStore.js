@@ -83,17 +83,21 @@ export const useExchangeStore = create((set, get) => ({
     set({ responseLoading: true, error: null });
     try {
       const response = await exchangeAPI.respond(exchangeId, action);
-      const updatedExchange = response.data;
       
-      // Update the exchange in received exchanges
-      set(state => ({
-        receivedExchanges: state.receivedExchanges.map(exchange =>
-          exchange.id === exchangeId ? updatedExchange : exchange
-        ),
+      // After successful response, refetch both received and sent exchanges
+      // to ensure we have properly populated book data
+      const [receivedResponse, sentResponse] = await Promise.all([
+        exchangeAPI.getReceived(),
+        exchangeAPI.getSent()
+      ]);
+      
+      set({
+        receivedExchanges: receivedResponse.data,
+        sentExchanges: sentResponse.data,
         responseLoading: false
-      }));
+      });
       
-      return updatedExchange;
+      return response.data;
     } catch (error) {
       set({ error: error.message, responseLoading: false });
       throw error;
