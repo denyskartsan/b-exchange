@@ -18,6 +18,7 @@ const BookList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [genreFilter, setGenreFilter] = useState('');
   const [conditionFilter, setConditionFilter] = useState('');
+  const [ownershipFilter, setOwnershipFilter] = useState('');
   
   // Exchange related local state
   const [selectedOfferedBook, setSelectedOfferedBook] = useState(null);
@@ -38,7 +39,7 @@ const BookList = () => {
 
   useEffect(() => {
     filterBooks();
-  }, [books, searchTerm, genreFilter, conditionFilter]);
+  }, [books, searchTerm, genreFilter, conditionFilter, ownershipFilter, currentUser]);
 
   // Handle error messages
   useEffect(() => {
@@ -72,6 +73,15 @@ const BookList = () => {
 
     if (conditionFilter) {
       filtered = filtered.filter(book => book.condition === conditionFilter);
+    }
+
+    if (ownershipFilter) {
+      if (ownershipFilter === 'my-books') {
+        filtered = filtered.filter(book => currentUser && book.ownerId === currentUser.id);
+      } else if (ownershipFilter === 'others-books') {
+        filtered = filtered.filter(book => !currentUser || book.ownerId !== currentUser.id);
+      }
+      // 'all-books' doesn't need additional filtering
     }
 
     setFilteredBooks(filtered);
@@ -160,7 +170,7 @@ const BookList = () => {
       {/* Filters */}
       <Card className="mb-6">
         <Row gutter={[16, 16]} align="middle">
-          <Col xs={24} sm={12} md={8}>
+          <Col xs={24} sm={12} md={6}>
             <Search
               data-testid="book-search-input"
               placeholder="Search by title or author"
@@ -169,6 +179,20 @@ const BookList = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               allowClear
             />
+          </Col>
+          <Col xs={12} sm={6} md={4}>
+            <Select
+              data-testid="ownership-filter-select"
+              placeholder="Filter by ownership"
+              value={ownershipFilter}
+              onChange={setOwnershipFilter}
+              allowClear
+              className="w-full"
+            >
+              <Option value="all-books">All Books</Option>
+              <Option value="my-books">My Books</Option>
+              <Option value="others-books">Others' Books</Option>
+            </Select>
           </Col>
           <Col xs={12} sm={6} md={4}>
             <Select
