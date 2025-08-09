@@ -53,11 +53,11 @@
       "genre": "Fiction",
       "condition": "Good",
       "description": "A classic coming-of-age story",
-      "status": "pending-exchange",
-      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "status": "available",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
       "owner": {
-        "name": "Jane Smith",
-        "email": "jane@example.com"
+        "name": "John Doe",
+        "email": "john@example.com"
       },
       "createdAt": "2025-08-09T11:15:00.000Z"
     },
@@ -83,11 +83,11 @@
       "genre": "Fiction",
       "condition": "Like New",
       "description": "Dystopian social science fiction novel",
-      "status": "pending-exchange",
-      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "status": "exchanged-available",
+      "ownerId": "8787a444-5165-440b-a635-a334f2b7144e",
       "owner": {
-        "name": "John Doe",
-        "email": "john@example.com"
+        "name": "Jane Smith",
+        "email": "jane@example.com"
       },
       "createdAt": "2025-08-09T11:15:00.000Z"
     },
@@ -171,8 +171,22 @@
       "requestedBookId": "book-john-3",
       "offeredBookId": "book-jane-2",
       "message": "",
-      "status": "pending",
-      "createdAt": "2025-08-09T12:09:52.677Z"
+      "status": "accepted",
+      "createdAt": "2025-08-09T12:09:52.677Z",
+      "respondedAt": "2025-08-09T12:18:42.785Z"
+    },
+    {
+      "id": "269bc37a-4cef-4642-8176-b42544634aaa",
+      "requesterId": "8787a444-5165-440b-a635-a334f2b7144e",
+      "requesterName": "Jane Smith",
+      "ownerId": "68d0439b-d342-4c98-a363-d53701fa3d9f",
+      "ownerName": "John Doe",
+      "requestedBookId": "book-john-3",
+      "offeredBookId": "book-john-2",
+      "message": "",
+      "status": "declined",
+      "createdAt": "2025-08-09T12:20:26.053Z",
+      "respondedAt": "2025-08-09T12:25:24.792Z"
     }
   ]
 }

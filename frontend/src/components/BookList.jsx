@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider, Popconfirm, Form, Rate } from 'antd';
-import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined, EditOutlined, StarFilled } from '@ant-design/icons';
+import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined, EditOutlined, StarFilled, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useBooksStore, useAuthStore, useUIStore, useExchangeStore } from '../stores';
 import BookForm from './BookForm';
 import { BOOK_CONDITIONS, BOOK_GENRES, getConditionColor, getConditionStars } from '../constants/bookConstants';
@@ -12,7 +12,7 @@ const BookList = () => {
   const { books, myBooks, fetchBooks, fetchMyBooks, isLoading, error, clearError, deleteBook, updateBook } = useBooksStore();
   const { getCurrentUser } = useAuthStore();
   const { openModal, closeModal, isModalOpen, getModalData } = useUIStore();
-  const { createExchange } = useExchangeStore();
+  const { createExchange, receivedExchanges, fetchReceivedExchanges, respondToExchange, responseLoading } = useExchangeStore();
   
   // Local state for filtering
   const [filteredBooks, setFilteredBooks] = useState([]);
@@ -29,6 +29,10 @@ const BookList = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
   const [editForm] = Form.useForm();
+  // Exchange response confirmation modal state
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [selectedExchange, setSelectedExchange] = useState(null);
+  const [selectedAction, setSelectedAction] = useState(null);
   
   const currentUser = getCurrentUser();
   const exchangeModalVisible = isModalOpen('exchange');
@@ -36,7 +40,11 @@ const BookList = () => {
 
   useEffect(() => {
     handleFetchBooks();
-  }, []);
+    // Also fetch received exchanges to show Accept/Decline buttons
+    if (currentUser) {
+      fetchReceivedExchanges().catch(() => {});
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     filterBooks();
@@ -148,6 +156,54 @@ const BookList = () => {
     } catch (error) {
       message.error(error.response?.data?.message || 'Failed to delete book');
     }
+  };
+
+  // Find pending exchange request where someone wants this book from the current user
+  const getPendingExchangeForBook = (bookId) => {
+    return receivedExchanges.find(exchange => 
+      exchange.requestedBook?.id === bookId && exchange.status === 'pending'
+    );
+  };
+  
+  // Find pending exchange request where current user can respond (they want your book, offering theirs)
+  const getPendingExchangeWhereCanRespond = (bookId) => {
+    return receivedExchanges.find(exchange => 
+      exchange.offeredBook?.id === bookId && exchange.status === 'pending'
+    );
+  };
+
+  // Handle opening the exchange response confirmation modal
+  const handleExchangeResponse = (exchange, action) => {
+    setSelectedExchange(exchange);
+    setSelectedAction(action);
+    setConfirmModalVisible(true);
+  };
+
+  // Handle confirming the exchange response
+  const handleConfirmExchangeResponse = async () => {
+    if (!selectedExchange || !selectedAction) return;
+    
+    try {
+      await respondToExchange(selectedExchange.id, selectedAction);
+      message.success(`Exchange ${selectedAction}ed successfully!`);
+      setConfirmModalVisible(false);
+      setSelectedExchange(null);
+      setSelectedAction(null);
+      // Refresh both books and exchanges to show updated statuses
+      await Promise.all([
+        handleFetchBooks(),
+        fetchReceivedExchanges()
+      ]);
+    } catch (error) {
+      message.error(error.response?.data?.message || `Failed to ${selectedAction} exchange`);
+    }
+  };
+
+  // Handle canceling the exchange response confirmation
+  const handleCancelExchangeResponse = () => {
+    setConfirmModalVisible(false);
+    setSelectedExchange(null);
+    setSelectedAction(null);
   };
 
 
@@ -292,53 +348,90 @@ const BookList = () => {
                     </div>
                   </div>
                 }
-                actions={[
-                  isOwnBook(book) ? (
-                    <div className="flex gap-2">
-                      {book.status !== 'exchanged' && (
-                        <Button
-                          icon={<EditOutlined />}
-                          onClick={() => {
-                            setEditingBook(book);
-                            setEditModalVisible(true);
-                            editForm.setFieldsValue({
-                              title: book.title,
-                              author: book.author,
-                              genre: book.genre,
-                              condition: book.condition,
-                              description: book.description,
-                              coverImageUrl: book.coverImageUrl,
-                            });
-                          }}
+                actions={(() => {
+                  const pendingExchangeForMyBook = getPendingExchangeForBook(book.id);
+                  const pendingExchangeWhereICanRespond = getPendingExchangeWhereCanRespond(book.id);
+                  
+                  if (isOwnBook(book)) {
+                    // Show normal Edit/Delete buttons for owned books
+                    return [
+                      <div className="flex gap-2" key="owner-actions">
+                        {book.status !== 'exchanged' && (
+                          <Button
+                            icon={<EditOutlined />}
+                            onClick={() => {
+                              setEditingBook(book);
+                              setEditModalVisible(true);
+                              editForm.setFieldsValue({
+                                title: book.title,
+                                author: book.author,
+                                genre: book.genre,
+                                condition: book.condition,
+                                description: book.description,
+                                coverImageUrl: book.coverImageUrl,
+                              });
+                            }}
+                          >
+                            Edit
+                          </Button>
+                        )}
+                        <Popconfirm
+                          title="Delete this book?"
+                          description="This action cannot be undone."
+                          okText="Delete"
+                          okButtonProps={{ danger: true }}
+                          cancelText="Cancel"
+                          onConfirm={() => handleDeleteBook(book.id)}
                         >
-                          Edit
-                        </Button>
-                      )}
-                      <Popconfirm
-                        title="Delete this book?"
-                        description="This action cannot be undone."
-                        okText="Delete"
-                        okButtonProps={{ danger: true }}
-                        cancelText="Cancel"
-                        onConfirm={() => handleDeleteBook(book.id)}
+                          <Button danger icon={<DeleteOutlined />} data-testid={`delete-book-${book.id}`}>
+                            Delete
+                          </Button>
+                        </Popconfirm>
+                      </div>
+                    ];
+                  } else {
+                    // For other people's books
+                    // If there's a pending exchange where I can respond (they want my book, offering theirs), show Accept/Decline
+                    if (pendingExchangeWhereICanRespond) {
+                      return [
+                        <div className="flex gap-1" key="exchange-response">
+                          <Button 
+                            type="primary" 
+                            icon={<CheckOutlined />} 
+                            size="small"
+                            loading={responseLoading}
+                            onClick={() => handleExchangeResponse(pendingExchangeWhereICanRespond, 'accept')}
+                          >
+                            Accept
+                          </Button>
+                          <Button 
+                            danger 
+                            icon={<CloseOutlined />} 
+                            size="small"
+                            loading={responseLoading}
+                            onClick={() => handleExchangeResponse(pendingExchangeWhereICanRespond, 'decline')}
+                          >
+                            Decline
+                          </Button>
+                        </div>
+                      ];
+                    }
+                    
+                    // Otherwise show normal Exchange button
+                    return [
+                      <Button
+                        key="exchange-action"
+                        data-testid={`exchange-button-${book.id}`}
+                        type="primary"
+                        icon={<SwapOutlined />}
+                        onClick={() => handleExchange(book)}
+                        disabled={book.status === 'pending-exchange'}
                       >
-                        <Button danger icon={<DeleteOutlined />} data-testid={`delete-book-${book.id}`}>
-                          Delete
-                        </Button>
-                      </Popconfirm>
-                    </div>
-                  ) : (
-                    <Button
-                      data-testid={`exchange-button-${book.id}`}
-                      type="primary"
-                      icon={<SwapOutlined />}
-                      onClick={() => handleExchange(book)}
-                      disabled={book.status === 'pending-exchange'}
-                    >
-                      {book.status === 'pending-exchange' ? 'Pending Exchange' : 'Exchange'}
-                    </Button>
-                  )
-                ]}
+                        {book.status === 'pending-exchange' ? 'Pending Exchange' : 'Exchange'}
+                      </Button>
+                    ];
+                  }
+                })()}
               >
                 <Card.Meta
                   title={
@@ -534,6 +627,57 @@ const BookList = () => {
                 </div>
               </div>
             )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Exchange Response Confirmation Modal */}
+      <Modal
+        title={`${selectedAction === 'accept' ? 'Accept' : 'Decline'} Exchange Request`}
+        open={confirmModalVisible}
+        onOk={handleConfirmExchangeResponse}
+        onCancel={handleCancelExchangeResponse}
+        okText={selectedAction === 'accept' ? 'Accept' : 'Decline'}
+        okButtonProps={{
+          danger: selectedAction === 'decline',
+          type: selectedAction === 'accept' ? 'primary' : 'default'
+        }}
+        cancelText="Cancel"
+        confirmLoading={responseLoading}
+      >
+        {selectedExchange && (
+          <div className="space-y-4">
+            <p>
+              Are you sure you want to {selectedAction} this exchange request?
+              {selectedAction === 'accept' && ' The books will be swapped immediately.'}
+            </p>
+            
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-800 mb-3">Exchange Details:</h4>
+              
+              <div className="space-y-2 text-sm">
+                <div>
+                  <strong>Requester:</strong> {selectedExchange.requesterName || 'Unknown'}
+                </div>
+                
+                <div>
+                  <strong>They want:</strong> "{selectedExchange.requestedBook?.title}" by {selectedExchange.requestedBook?.author}
+                </div>
+                
+                <div>
+                  <strong>They offer:</strong> "{selectedExchange.offeredBook?.title}" by {selectedExchange.offeredBook?.author}
+                </div>
+                
+                {selectedExchange.message && (
+                  <div>
+                    <strong>Message:</strong>
+                    <div className="italic text-gray-600 mt-1">
+                      "{selectedExchange.message}"
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
       </Modal>
