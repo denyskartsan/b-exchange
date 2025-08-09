@@ -263,23 +263,25 @@ const BookList = () => {
                 actions={[
                   isOwnBook(book) ? (
                     <div className="flex gap-2">
-                      <Button
-                        icon={<EditOutlined />}
-                        onClick={() => {
-                          setEditingBook(book);
-                          setEditModalVisible(true);
-                          editForm.setFieldsValue({
-                            title: book.title,
-                            author: book.author,
-                            genre: book.genre,
-                            condition: book.condition,
-                            description: book.description,
-                            coverImageUrl: book.coverImageUrl,
-                          });
-                        }}
-                      >
-                        Edit
-                      </Button>
+                      {book.status !== 'exchanged' && (
+                        <Button
+                          icon={<EditOutlined />}
+                          onClick={() => {
+                            setEditingBook(book);
+                            setEditModalVisible(true);
+                            editForm.setFieldsValue({
+                              title: book.title,
+                              author: book.author,
+                              genre: book.genre,
+                              condition: book.condition,
+                              description: book.description,
+                              coverImageUrl: book.coverImageUrl,
+                            });
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      )}
                       <Popconfirm
                         title="Delete this book?"
                         description="This action cannot be undone."
@@ -317,9 +319,14 @@ const BookList = () => {
                       <div className="text-sm text-gray-600">by {book.author}</div>
                       <div className="flex justify-between items-center">
                         <Tag color="blue">{book.genre}</Tag>
-                        <Tag color={getConditionColor(book.condition)}>
-                          {book.condition}
-                        </Tag>
+                        <div className="flex gap-1">
+                          <Tag color={getConditionColor(book.condition)}>
+                            {book.condition}
+                          </Tag>
+                          {book.status === 'exchanged' && (
+                            <Tag color="purple">Exchanged</Tag>
+                          )}
+                        </div>
                       </div>
                       <div className="flex items-center text-xs text-gray-500 mt-2">
                         <Avatar size="small" icon={<UserOutlined />} className="mr-1" />
@@ -429,9 +436,9 @@ const BookList = () => {
                 </div>
               ) : (
                 <div className="max-h-60 overflow-y-auto border rounded-lg">
-                  <List
-                    dataSource={myBooks}
-                    renderItem={(book) => (
+              <List
+                dataSource={myBooks.filter(book => book.status === 'available')}
+                renderItem={(book) => (
                       <List.Item
                         className={`cursor-pointer transition-colors ${
                           selectedOfferedBook?.id === book.id 
