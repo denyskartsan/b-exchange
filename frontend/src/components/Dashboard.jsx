@@ -152,9 +152,9 @@ const Dashboard = () => {
                       {book.status === 'available' 
                         ? 'Available' 
                         : book.status === 'exchanged-available'
-                        ? 'Previously Exchanged'
+                        ? 'Exchanged'
                         : book.status === 'pending-exchange'
-                        ? 'Pending Exchange'
+                        ? 'Pending'
                         : book.status}
                     </div>
                   </List.Item>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider, Popconfirm, Form } from 'antd';
-import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Modal, List, Divider, Popconfirm, Form, Rate } from 'antd';
+import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined, EditOutlined, StarFilled } from '@ant-design/icons';
 import { useBooksStore, useAuthStore, useUIStore, useExchangeStore } from '../stores';
 import BookForm from './BookForm';
 
@@ -172,10 +172,21 @@ const BookList = () => {
   const getStatusText = (status) => {
     const texts = {
       'available': 'Available',
-      'exchanged-available': 'Previously Exchanged',
-      'pending-exchange': 'Pending Exchange'
+      'exchanged-available': 'Exchanged',
+      'pending-exchange': 'Pending'
     };
     return texts[status] || status;
+  };
+
+  const getConditionStars = (condition) => {
+    const conditionMap = {
+      'Like New': 5,
+      'Very Good': 4, 
+      'Good': 3,
+      'Fair': 2,
+      'Poor': 1
+    };
+    return conditionMap[condition] || 3;
   };
 
   const genres = [...new Set(books.map(book => book.genre))].filter(Boolean);
@@ -264,22 +275,32 @@ const BookList = () => {
             <Col xs={24} sm={12} md={8} lg={6} key={book.id}>
               <Card
                 data-testid={`book-card-${book.id}`}
-                className="h-full hover:shadow-lg transition-shadow"
+                className="h-full hover:shadow-lg transition-shadow relative"
                 cover={
-                  book.coverImageUrl ? (
-                    <img
-                      src={book.coverImageUrl}
-                      alt={`${book.title} cover`}
-                      className="h-48 w-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="h-48 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-                      <BookOutlined className="text-4xl text-blue-400" />
+                  <div className="relative">
+                    {book.coverImageUrl ? (
+                      <img
+                        src={book.coverImageUrl}
+                        alt={`${book.title} cover`}
+                        className="h-48 w-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="h-48 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                        <BookOutlined className="text-4xl text-blue-400" />
+                      </div>
+                    )}
+                    {/* Star Rating in top-right corner */}
+                    <div className="absolute top-2 right-2 bg-white bg-opacity-90 px-2 py-1 rounded-md shadow-sm">
+                      <Rate 
+                        disabled 
+                        value={getConditionStars(book.condition)} 
+                        style={{ fontSize: '12px', color: '#faad14' }}
+                      />
                     </div>
-                  )
+                  </div>
                 }
                 actions={[
                   isOwnBook(book) ? (
@@ -340,14 +361,9 @@ const BookList = () => {
                       <div className="text-sm text-gray-600">by {book.author}</div>
                       <div className="flex justify-between items-center">
                         <Tag color="blue">{book.genre}</Tag>
-                        <div className="flex gap-1">
-                          <Tag color={getConditionColor(book.condition)}>
-                            {book.condition}
-                          </Tag>
-                          <Tag color={getStatusColor(book.status)}>
-                            {getStatusText(book.status)}
-                          </Tag>
-                        </div>
+                        <Tag color={getStatusColor(book.status)}>
+                          {getStatusText(book.status)}
+                        </Tag>
                       </div>
                       <div className="flex items-center text-xs text-gray-500 mt-2">
                         <Avatar size="small" icon={<UserOutlined />} className="mr-1" />

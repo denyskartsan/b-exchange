@@ -104,7 +104,9 @@
         "name": "John Doe",
         "email": "john@example.com"
       },
-      "createdAt": "2025-08-09T11:15:00.000Z"
+      "createdAt": "2025-08-09T11:15:00.000Z",
+      "coverImageUrl": "https://marketplace.canva.com/EAGKkPbakT4/1/0/251w/canva-purple-sky-book-cover-_DoLgxCzP90.jpg",
+      "updatedAt": "2025-08-09T11:54:17.182Z"
     }
   ],
   "exchanges": [
