@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input, Select, Row, Col } from 'antd';
 import { BookOutlined } from '@ant-design/icons';
+import { BOOK_CONDITIONS, BOOK_GENRES } from '../constants/bookConstants';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -61,19 +62,9 @@ const BookForm = ({
               placeholder="Select genre"
               allowClear
             >
-              <Option value="Fiction">Fiction</Option>
-              <Option value="Non-Fiction">Non-Fiction</Option>
-              <Option value="Science Fiction">Science Fiction</Option>
-              <Option value="Fantasy">Fantasy</Option>
-              <Option value="Mystery">Mystery</Option>
-              <Option value="Romance">Romance</Option>
-              <Option value="Thriller">Thriller</Option>
-              <Option value="Biography">Biography</Option>
-              <Option value="History">History</Option>
-              <Option value="Self-Help">Self-Help</Option>
-              <Option value="Business">Business</Option>
-              <Option value="Technology">Technology</Option>
-              <Option value="Other">Other</Option>
+              {BOOK_GENRES.map(genre => (
+                <Option key={genre} value={genre}>{genre}</Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>
@@ -88,11 +79,9 @@ const BookForm = ({
               placeholder="Select condition"
               allowClear
             >
-              <Option value="Like New">Like New</Option>
-              <Option value="Very Good">Very Good</Option>
-              <Option value="Good">Good</Option>
-              <Option value="Fair">Fair</Option>
-              <Option value="Poor">Poor</Option>
+              {BOOK_CONDITIONS.map(condition => (
+                <Option key={condition} value={condition}>{condition}</Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>

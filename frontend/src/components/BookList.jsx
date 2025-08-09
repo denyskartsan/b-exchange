@@ -3,6 +3,7 @@ import { Card, Row, Col, Input, Select, Button, message, Avatar, Tag, Empty, Mod
 import { SearchOutlined, BookOutlined, UserOutlined, SwapOutlined, DeleteOutlined, EditOutlined, StarFilled } from '@ant-design/icons';
 import { useBooksStore, useAuthStore, useUIStore, useExchangeStore } from '../stores';
 import BookForm from './BookForm';
+import { BOOK_CONDITIONS, BOOK_GENRES, getConditionColor, getConditionStars } from '../constants/bookConstants';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -149,16 +150,6 @@ const BookList = () => {
     }
   };
 
-  const getConditionColor = (condition) => {
-    const colors = {
-      'Like New': 'green',
-      'Very Good': 'blue',
-      'Good': 'cyan',
-      'Fair': 'orange',
-      'Poor': 'red'
-    };
-    return colors[condition] || 'default';
-  };
 
   const getStatusColor = (status) => {
     const colors = {
@@ -178,19 +169,16 @@ const BookList = () => {
     return texts[status] || status;
   };
 
-  const getConditionStars = (condition) => {
-    const conditionMap = {
-      'Like New': 5,
-      'Very Good': 4, 
-      'Good': 3,
-      'Fair': 2,
-      'Poor': 1
-    };
-    return conditionMap[condition] || 3;
-  };
 
   const genres = [...new Set(books.map(book => book.genre))].filter(Boolean);
-  const conditions = [...new Set(books.map(book => book.condition))].filter(Boolean);
+  const availableConditions = [...new Set(books.map(book => book.condition))].filter(Boolean);
+  
+  // Create condition options with disabled state for unavailable conditions
+  const conditionOptions = BOOK_CONDITIONS.map(condition => ({
+    value: condition,
+    label: condition,
+    disabled: !availableConditions.includes(condition)
+  }));
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -251,8 +239,10 @@ const BookList = () => {
               className="w-full"
               notFoundContent={isLoading ? 'Loading...' : 'No conditions available'}
             >
-              {conditions.length > 0 && conditions.map(condition => (
-                <Option key={condition} value={condition}>{condition}</Option>
+              {conditionOptions.map(({ value, label, disabled }) => (
+                <Option key={value} value={value} disabled={disabled}>
+                  {label} {disabled && '(No books)'}
+                </Option>
               ))}
             </Select>
           </Col>
